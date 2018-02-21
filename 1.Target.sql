@@ -76,214 +76,243 @@ AND  A.CodPais=@CodPais AND C.AnioCampana = @AnioCampana
 IF OBJECT_ID('tempdb.dbo.#KR_MCC_COMPT', 'U') IS NOT NULL
   DROP TABLE #KR_MCC_COMPT;
 
-SELECT C.PKebelista,C.AnioCampana,C.FlagActiva,C.FlagPasoPedido,D.DesNivelComportamiento,E.DesStatusCorp
-into #KR_MCC_COMPT
-from #KR_MCC_TARGET1 A
-INNER JOIN [DWH_ANALITICO].[dbo].[DWH_FSTAEBECAM] C ON A.PKEbelista = C.PKEbelista AND C.CodPais = @CodPais   
-INNER JOIN [DWH_ANALITICO].[dbo].[DWH_DCOMPORTAMIENTOROLLING] D on C.codcomportamientorolling = D.CodComportamiento
-INNER JOIN [DWH_ANALITICO].[dbo].[DWH_DSTATUS] E on C.CodStatus =E.CodStatus AND E.CodPais = A.CodPais   
-WHERE C.AnioCampana BETWEEN @AnioCampanamenos2 AND @AnioCampana
-GROUP BY C.PKebelista,C.AnioCampana,C.flagactiva,C.FlagPasoPedido,D.DesNivelComportamiento,E.DesStatusCorp
-;
-
----(19715 row(s) affected)
-
-
-----------------------COMPORTAMIENTO ROLLING
-
---IF OBJECT_ID('tempdb.dbo.#KR_COMP_ROLLINGT', 'U') IS NOT NULL
---  DROP TABLE #KR_COMP_ROLLINGT;
-
---DECLARE @SQLString2 NVARCHAR(2000);
-
---SET @SQLString2 = 
---N'SELECT PKebelista,['+ @AnioCampanamenos2+ '] AS Cx_Comp_Rolling,['+ @AnioCampanamenos1+ '] AS Cx1_Comp_Rolling,['+ @AnioCampana + '] AS Cx2_Comp_Rolling 
---INTO #KR_COMP_ROLLINGT
---FROM (SELECT PKebelista,Aniocampana,DesNivelComportamiento from #KR_MCC_COMPT ) as SourceTable 
---PIVOT (MAX(DesNivelComportamiento) FOR Aniocampana in (['+@AnioCampanamenos2+'],['+@AnioCampanamenos1+'],['+@AnioCampana+'])) AS PivotTable;'
---EXEC sp_executesql @SQLString2;
-
---SELECT Pkebelista, 
---		isnull([@AnioCampanamenos2],0) as Cx_Comp_Rolling,
---		isnull([@AnioCampanamenos1],0) as Cx1_Comp_Rolling,
---		isnull([@AnioCampana],0) as Cx2_Comp_Rolling
---INTO #KR_COMP_ROLLINGT
---FROM (SELECT Pkebelista,AnioCampana,DesNivelComportamiento from #KR_MCC_COMPT) as SourceTable
---PIVOT (MAX(DesNivelComportamiento) FOR AnioCampana IN ([@AnioCampanamenos2],[@AnioCampanamenos1],[@AnioCampana])) as PivotTable;
-
-
-
----4945
-
---SELECT * FROM ##KR_COMP_ROLLING
---SELECT * FROM ##KR_COMP_ROLLING WHERE [C0_Comp_Rolling]>1 or [C1_Comp_Rolling]>1 or [C2_Comp_Rolling]>1 or [C3_Comp_Rolling]>1 or [C4_Comp_Rolling]>1 or [C5_Comp_Rolling]>1 or [C6_Comp_Rolling]>1
-
-
-IF OBJECT_ID('tempdb.dbo.##KR_COMP_ROLLINGT1', 'U') IS NOT NULL
-  DROP TABLE ##KR_COMP_ROLLINGT1;
-
-select pkebelista,
-(select DesNivelComportamiento from ##KR_MCC_COMPT a where a.PKEbelista=b.pkebelista and AnioCampana=@AnioCampanamenos2) Cx_Comp_Rolling,
-(select DesNivelComportamiento from ##KR_MCC_COMPT a where a.PKEbelista=b.pkebelista and AnioCampana=@AnioCampanamenos1) Cx1_Comp_Rolling,
-(select DesNivelComportamiento from ##KR_MCC_COMPT a where a.PKEbelista=b.pkebelista and AnioCampana=@AnioCampana) Cx2_Comp_Rolling
-into ##KR_COMP_ROLLINGT1
-from ##KR_COMP_ROLLINGT b 
-group by pkebelista;
----4945 
-
---select * from ##KR_MCC_COMPT where PKebelista=2882009 order by  AnioCampana
---go
-
---select * from ##KR_COMP_ROLLINGT1 where PKebelista=2882009 --order by  AnioCampana
---go
-
-----------------------COD STATUS
-
-IF OBJECT_ID('tempdb.dbo.##KR_COD_STATUST', 'U') IS NOT NULL
-  DROP TABLE ##KR_COD_STATUST;
-
-DECLARE @SQLString3 NVARCHAR(2000);
-
-SET @SQLString3 = 
-N'
-SELECT PKebelista,['+ @AnioCampanamenos2+ '] AS Cx_Cod_Status,['+ @AnioCampanamenos1+ '] AS Cx1_Cod_Status,['+ @AnioCampana + '] AS Cx2_Cod_Status 
-INTO ##KR_COD_STATUST
-FROM 
-(SELECT PKebelista,Aniocampana,DesStatusCorp from ##KR_MCC_COMPT ) as SourceTable 
-PIVOT 
-(COUNT(DesStatusCorp)
- FOR Aniocampana in (['+@AnioCampanamenos2+'],['+@AnioCampanamenos1+'],['+@AnioCampana+'])) AS PivotTable;'
-
-EXEC sp_executesql @SQLString3;
-
----4945
-
-
-IF OBJECT_ID('tempdb.dbo.##KR_COD_STATUST1', 'U') IS NOT NULL
-  DROP TABLE ##KR_COD_STATUST1;
-
-select pkebelista,
-(select DesStatusCorp from ##KR_MCC_COMPT a where a.PKEbelista=b.pkebelista and AnioCampana=@AnioCampanamenos2) Cx_Status,
-(select DesStatusCorp from ##KR_MCC_COMPT a where a.PKEbelista=b.pkebelista and AnioCampana=@AnioCampanamenos1) Cx1_Status,
-(select DesStatusCorp from ##KR_MCC_COMPT a where a.PKEbelista=b.pkebelista and AnioCampana=@AnioCampana)  Cx2_Status
-into ##KR_COD_STATUST1
-from ##KR_COD_STATUST b 
-group by pkebelista;
----4945 
-
---select * from ##KR_MCC_COMPT where PKebelista=2882009 order by  AnioCampana
---go
-
---select * from ##KR_COD_STATUST1 where PKebelista=2882009 --order by  AnioCampana
---go
+;WITH TableMenos2 AS
+(
+	SELECT C.PKebelista,C.FlagActiva,C.FlagPasoPedido,D.DesNivelComportamiento,E.DesStatusCorp
+	from #KR_MCC_TARGET1 A
+	INNER JOIN [DWH_ANALITICO].[dbo].[DWH_FSTAEBECAM] C ON A.PKEbelista = C.PKEbelista AND C.CodPais = @CodPais   
+	INNER JOIN [DWH_ANALITICO].[dbo].[DWH_DCOMPORTAMIENTOROLLING] D on C.codcomportamientorolling = D.CodComportamiento
+	INNER JOIN [DWH_ANALITICO].[dbo].[DWH_DSTATUS] E on C.CodStatus =E.CodStatus AND E.CodPais = A.CodPais   
+	WHERE C.AnioCampana = @AnioCampana
+	GROUP BY C.PKebelista,C.AnioCampana,C.flagactiva,C.FlagPasoPedido,D.DesNivelComportamiento,E.DesStatusCorp
+), TableMenos1 AS
+(
+	SELECT C.PKebelista,C.FlagActiva,C.FlagPasoPedido,D.DesNivelComportamiento,E.DesStatusCorp
+	from #KR_MCC_TARGET1 A
+	INNER JOIN [DWH_ANALITICO].[dbo].[DWH_FSTAEBECAM] C ON A.PKEbelista = C.PKEbelista AND C.CodPais = @CodPais   
+	INNER JOIN [DWH_ANALITICO].[dbo].[DWH_DCOMPORTAMIENTOROLLING] D on C.codcomportamientorolling = D.CodComportamiento
+	INNER JOIN [DWH_ANALITICO].[dbo].[DWH_DSTATUS] E on C.CodStatus =E.CodStatus AND E.CodPais = A.CodPais   
+	WHERE C.AnioCampana = @AnioCampanamenos1 
+	GROUP BY C.PKebelista,C.AnioCampana,C.flagactiva,C.FlagPasoPedido,D.DesNivelComportamiento,E.DesStatusCorp
+), TableTemp
+(
+	SELECT C.PKebelista,C.FlagActiva,C.FlagPasoPedido,D.DesNivelComportamiento,E.DesStatusCorp
+	from #KR_MCC_TARGET1 A
+	INNER JOIN [DWH_ANALITICO].[dbo].[DWH_FSTAEBECAM] C ON A.PKEbelista = C.PKEbelista AND C.CodPais = @CodPais   
+	INNER JOIN [DWH_ANALITICO].[dbo].[DWH_DCOMPORTAMIENTOROLLING] D on C.codcomportamientorolling = D.CodComportamiento
+	INNER JOIN [DWH_ANALITICO].[dbo].[DWH_DSTATUS] E on C.CodStatus =E.CodStatus AND E.CodPais = A.CodPais   
+	WHERE C.AnioCampana = @AnioCampanamenos2 
+	GROUP BY C.PKebelista,C.AnioCampana,C.flagactiva,C.FlagPasoPedido,D.DesNivelComportamiento,E.DesStatusCorp
+)
+SELECT A.*, B.FlagActiva as Cx2_Activa,C.FlagActiva as Cx1_Activa,D.FlagActiva as Cx_Activa,
+			B.FlagPasoPedido as Cx2_PasoPedido, C.FlasPasoPedido as Cx1_PasoPedido, C.FlagPasoPedido as Cx_PasoPedido,
+			B.DesNivelComportamiento as Cx2_Comp_Rolling, C.DesNivelComportamiento as Cx1_Comp_Rolling , D.DesNivelComportamiento as Cx_Comp_Rolling,
+			B.DesStatusCorp as Cx2_Status, C.DesStatusCorp as Cx1_Status, D.DesStatusCorp as Cx_Status
+FROM #KR_MCC_TARGET1 A 
+INNER JOIN TableMenos2 B ON A.PkEbelista = B.Pkebelista 
+INNER JOIN TableMenos1 C ON A.Pkebelista = C.PkeEbelista 
+INNER JOIN TableTemp D ON A.PkEbelista = D.PkEbelista
 
 
 
----------------------FLAG PASO PEDIDO
+-----(19715 row(s) affected)
 
-IF OBJECT_ID('tempdb.dbo.##FLAGPASOPEDIDOT', 'U') IS NOT NULL
-  DROP TABLE ##FLAGPASOPEDIDOT;
 
-DECLARE @SQLString5 NVARCHAR(2000);
+------------------------COMPORTAMIENTO ROLLING
 
-SET @SQLString5 = 
-N'
-SELECT PKebelista,['+ @AnioCampanamenos2+ '] AS Cx_FlagPasoPedido,['+ @AnioCampanamenos1+ '] AS Cx1_FlagPasoPedido,['+ @AnioCampana + '] AS Cx2_FlagPasoPedido 
-INTO ##FLAGPASOPEDIDOT
-FROM 
-(SELECT PKebelista,Aniocampana,FlagPasoPedido from ##KR_MCC_COMPT ) as SourceTable 
-PIVOT 
-(COUNT(FlagPasoPedido)
- FOR Aniocampana in (['+@AnioCampanamenos2+'],['+@AnioCampanamenos1+'],['+@AnioCampana+'])) AS PivotTable;'
+----IF OBJECT_ID('tempdb.dbo.#KR_COMP_ROLLINGT', 'U') IS NOT NULL
+----  DROP TABLE #KR_COMP_ROLLINGT;
 
-EXEC sp_executesql @SQLString5;
+----DECLARE @SQLString2 NVARCHAR(2000);
 
---SELECT * FROM ##FLAGPASOPEDIDO
---SELECT * FROM ##FLAGPASOPEDIDO WHERE [C0_FLAGPASOPEDIDO]>1 or[C1_FLAGPASOPEDIDO]>1 or [C2_FLAGPASOPEDIDO]>1 or [C3_FLAGPASOPEDIDO]>1 or [C4_FLAGPASOPEDIDO]>1 or [C5_FLAGPASOPEDIDO]>1 or [C6_FLAGPASOPEDIDO]>1
+----SET @SQLString2 = 
+----N'SELECT PKebelista,['+ @AnioCampanamenos2+ '] AS Cx_Comp_Rolling,['+ @AnioCampanamenos1+ '] AS Cx1_Comp_Rolling,['+ @AnioCampana + '] AS Cx2_Comp_Rolling 
+----INTO #KR_COMP_ROLLINGT
+----FROM (SELECT PKebelista,Aniocampana,DesNivelComportamiento from #KR_MCC_COMPT ) as SourceTable 
+----PIVOT (MAX(DesNivelComportamiento) FOR Aniocampana in (['+@AnioCampanamenos2+'],['+@AnioCampanamenos1+'],['+@AnioCampana+'])) AS PivotTable;'
+----EXEC sp_executesql @SQLString2;
 
-IF OBJECT_ID('tempdb.dbo.##FLAGPASOPEDIDOT1', 'U') IS NOT NULL
-  DROP TABLE ##FLAGPASOPEDIDOT1;
+----SELECT Pkebelista, 
+----		isnull([@AnioCampanamenos2],0) as Cx_Comp_Rolling,
+----		isnull([@AnioCampanamenos1],0) as Cx1_Comp_Rolling,
+----		isnull([@AnioCampana],0) as Cx2_Comp_Rolling
+----INTO #KR_COMP_ROLLINGT
+----FROM (SELECT Pkebelista,AnioCampana,DesNivelComportamiento from #KR_MCC_COMPT) as SourceTable
+----PIVOT (MAX(DesNivelComportamiento) FOR AnioCampana IN ([@AnioCampanamenos2],[@AnioCampanamenos1],[@AnioCampana])) as PivotTable;
 
-select pkebelista,
-(select FlagPasoPedido from ##KR_MCC_COMPT a where a.PKEbelista=b.pkebelista and AnioCampana=@AnioCampanamenos2) Cx_PasoPedido,
-(select FlagPasoPedido from ##KR_MCC_COMPT a where a.PKEbelista=b.pkebelista and AnioCampana=@AnioCampanamenos1) Cx1_PasoPedido,
-(select FlagPasoPedido from ##KR_MCC_COMPT a where a.PKEbelista=b.pkebelista and AnioCampana=@AnioCampana) Cx2_PasoPedido
-into ##FLAGPASOPEDIDOT1
-from ##FLAGPASOPEDIDOT b 
-group by pkebelista;
----4945 
---select * from ##KR_MCC_COMPT where PKebelista=2882009 order by  AnioCampana
---go
 
---select * from ##FLAGPASOPEDIDOT1 where PKebelista=2882009 --order by  AnioCampana
---go
 
----------------------FLAG ACTIVO
+-----4945
 
-IF OBJECT_ID('tempdb.dbo.##FLAG_ACTIVOT', 'U') IS NOT NULL
-  DROP TABLE ##FLAG_ACTIVOT;
+----SELECT * FROM ##KR_COMP_ROLLING
+----SELECT * FROM ##KR_COMP_ROLLING WHERE [C0_Comp_Rolling]>1 or [C1_Comp_Rolling]>1 or [C2_Comp_Rolling]>1 or [C3_Comp_Rolling]>1 or [C4_Comp_Rolling]>1 or [C5_Comp_Rolling]>1 or [C6_Comp_Rolling]>1
 
-DECLARE @SQLString6 NVARCHAR(2000);
 
-SET @SQLString6 = 
-N'
-SELECT PKebelista,['+ @AnioCampanamenos2+ '] AS Cx_flagactiva,['+ @AnioCampanamenos1+ '] AS Cx1_flagactiva,['+ @AnioCampana + '] AS Cx2_flagactiva 
-INTO ##FLAG_ACTIVOT
-FROM 
-(SELECT PKebelista,Aniocampana,flagactiva from ##KR_MCC_COMPT ) as SourceTable 
-PIVOT 
-(COUNT(flagactiva)
- FOR Aniocampana in (['+@AnioCampanamenos2+'],['+@AnioCampanamenos1+'],['+@AnioCampana+'])) AS PivotTable;'
+--IF OBJECT_ID('tempdb.dbo.##KR_COMP_ROLLINGT1', 'U') IS NOT NULL
+--  DROP TABLE ##KR_COMP_ROLLINGT1;
 
-EXEC sp_executesql @SQLString6;
+--select pkebelista,
+--(select DesNivelComportamiento from ##KR_MCC_COMPT a where a.PKEbelista=b.pkebelista and AnioCampana=@AnioCampanamenos2) Cx_Comp_Rolling,
+--(select DesNivelComportamiento from ##KR_MCC_COMPT a where a.PKEbelista=b.pkebelista and AnioCampana=@AnioCampanamenos1) Cx1_Comp_Rolling,
+--(select DesNivelComportamiento from ##KR_MCC_COMPT a where a.PKEbelista=b.pkebelista and AnioCampana=@AnioCampana) Cx2_Comp_Rolling
+--into ##KR_COMP_ROLLINGT1
+--from ##KR_COMP_ROLLINGT b 
+--group by pkebelista;
+-----4945 
 
---SELECT * FROM ##FLAGACTIVO
---SELECT * FROM ##FLAGACTIVO WHERE [C0_FLAGPASOPEDIDO]>1 or[C1_FLAGPASOPEDIDO]>1 or [C2_FLAGPASOPEDIDO]>1 or [C3_FLAGPASOPEDIDO]>1 or [C4_FLAGPASOPEDIDO]>1 or [C5_FLAGPASOPEDIDO]>1 or [C6_FLAGPASOPEDIDO]>1
+----select * from ##KR_MCC_COMPT where PKebelista=2882009 order by  AnioCampana
+----go
 
-IF OBJECT_ID('tempdb.dbo.##FLAG_ACTIVOT1', 'U') IS NOT NULL
-  DROP TABLE ##FLAG_ACTIVOT1;
+----select * from ##KR_COMP_ROLLINGT1 where PKebelista=2882009 --order by  AnioCampana
+----go
 
-select pkebelista,
-(select flagactiva from ##KR_MCC_COMPT a where a.PKEbelista=b.pkebelista and AnioCampana=@AnioCampanamenos2) Cx_Activa,
-(select flagactiva from ##KR_MCC_COMPT a where a.PKEbelista=b.pkebelista and AnioCampana=@AnioCampanamenos1) Cx1_Activa,
-(select flagactiva from ##KR_MCC_COMPT a where a.PKEbelista=b.pkebelista and AnioCampana=@AnioCampana) Cx2_Activa
-into ##FLAG_ACTIVOT1
-from ##FLAG_ACTIVOT b 
-group by pkebelista;
----4945 
+------------------------COD STATUS
 
---select * from ##KR_MCC_COMPT where PKebelista=2882009 order by  AnioCampana
---go
+--IF OBJECT_ID('tempdb.dbo.##KR_COD_STATUST', 'U') IS NOT NULL
+--  DROP TABLE ##KR_COD_STATUST;
 
---select * from ##FLAG_ACTIVOT1 where PKebelista=2882009 --order by  AnioCampana
---go
+--DECLARE @SQLString3 NVARCHAR(2000);
 
---------------------TABLA FINAL:
+--SET @SQLString3 = 
+--N'
+--SELECT PKebelista,['+ @AnioCampanamenos2+ '] AS Cx_Cod_Status,['+ @AnioCampanamenos1+ '] AS Cx1_Cod_Status,['+ @AnioCampana + '] AS Cx2_Cod_Status 
+--INTO ##KR_COD_STATUST
+--FROM 
+--(SELECT PKebelista,Aniocampana,DesStatusCorp from ##KR_MCC_COMPT ) as SourceTable 
+--PIVOT 
+--(COUNT(DesStatusCorp)
+-- FOR Aniocampana in (['+@AnioCampanamenos2+'],['+@AnioCampanamenos1+'],['+@AnioCampana+'])) AS PivotTable;'
 
-IF OBJECT_ID('tempdb.dbo.##KR_MCC_TARGET2', 'U') IS NOT NULL
-  DROP TABLE ##KR_MCC_TARGET2;
+--EXEC sp_executesql @SQLString3;
 
-SELECT
-A.*,
-C.Cx_Status,
-C.Cx1_Status,
-C.Cx2_Status,
-G.Cx_Activa,
-G.Cx1_Activa,
-G.Cx2_Activa,
-E.Cx_Comp_Rolling,
-E.Cx1_Comp_Rolling,
-E.Cx2_Comp_Rolling,
-F.Cx_PasoPedido,
-F.Cx1_PasoPedido,
-F.Cx2_PasoPedido
-INTO ##KR_MCC_TARGET2
-FROM 
-##KR_MCC_TARGET1 A
-LEFT JOIN ##KR_COD_STATUST1 C   ON A.PKEbelista=C.PKEbelista
-LEFT JOIN ##KR_COMP_ROLLINGT1 E ON A.PKEbelista=E.PKEbelista
-LEFT JOIN ##FLAGPASOPEDIDOT1 F ON A.PKEbelista=F.PKEbelista
-LEFT JOIN ##FLAG_ACTIVOT1 G ON A.PKEbelista=G.PKEbelista;
+-----4945
+
+
+--IF OBJECT_ID('tempdb.dbo.##KR_COD_STATUST1', 'U') IS NOT NULL
+--  DROP TABLE ##KR_COD_STATUST1;
+
+--select pkebelista,
+--(select DesStatusCorp from ##KR_MCC_COMPT a where a.PKEbelista=b.pkebelista and AnioCampana=@AnioCampanamenos2) Cx_Status,
+--(select DesStatusCorp from ##KR_MCC_COMPT a where a.PKEbelista=b.pkebelista and AnioCampana=@AnioCampanamenos1) Cx1_Status,
+--(select DesStatusCorp from ##KR_MCC_COMPT a where a.PKEbelista=b.pkebelista and AnioCampana=@AnioCampana)  Cx2_Status
+--into ##KR_COD_STATUST1
+--from ##KR_COD_STATUST b 
+--group by pkebelista;
+-----4945 
+
+----select * from ##KR_MCC_COMPT where PKebelista=2882009 order by  AnioCampana
+----go
+
+----select * from ##KR_COD_STATUST1 where PKebelista=2882009 --order by  AnioCampana
+----go
+
+
+
+-----------------------FLAG PASO PEDIDO
+
+--IF OBJECT_ID('tempdb.dbo.##FLAGPASOPEDIDOT', 'U') IS NOT NULL
+--  DROP TABLE ##FLAGPASOPEDIDOT;
+
+--DECLARE @SQLString5 NVARCHAR(2000);
+
+--SET @SQLString5 = 
+--N'
+--SELECT PKebelista,['+ @AnioCampanamenos2+ '] AS Cx_FlagPasoPedido,['+ @AnioCampanamenos1+ '] AS Cx1_FlagPasoPedido,['+ @AnioCampana + '] AS Cx2_FlagPasoPedido 
+--INTO ##FLAGPASOPEDIDOT
+--FROM 
+--(SELECT PKebelista,Aniocampana,FlagPasoPedido from ##KR_MCC_COMPT ) as SourceTable 
+--PIVOT 
+--(COUNT(FlagPasoPedido)
+-- FOR Aniocampana in (['+@AnioCampanamenos2+'],['+@AnioCampanamenos1+'],['+@AnioCampana+'])) AS PivotTable;'
+
+--EXEC sp_executesql @SQLString5;
+
+----SELECT * FROM ##FLAGPASOPEDIDO
+----SELECT * FROM ##FLAGPASOPEDIDO WHERE [C0_FLAGPASOPEDIDO]>1 or[C1_FLAGPASOPEDIDO]>1 or [C2_FLAGPASOPEDIDO]>1 or [C3_FLAGPASOPEDIDO]>1 or [C4_FLAGPASOPEDIDO]>1 or [C5_FLAGPASOPEDIDO]>1 or [C6_FLAGPASOPEDIDO]>1
+
+--IF OBJECT_ID('tempdb.dbo.##FLAGPASOPEDIDOT1', 'U') IS NOT NULL
+--  DROP TABLE ##FLAGPASOPEDIDOT1;
+
+--select pkebelista,
+--(select FlagPasoPedido from ##KR_MCC_COMPT a where a.PKEbelista=b.pkebelista and AnioCampana=@AnioCampanamenos2) Cx_PasoPedido,
+--(select FlagPasoPedido from ##KR_MCC_COMPT a where a.PKEbelista=b.pkebelista and AnioCampana=@AnioCampanamenos1) Cx1_PasoPedido,
+--(select FlagPasoPedido from ##KR_MCC_COMPT a where a.PKEbelista=b.pkebelista and AnioCampana=@AnioCampana) Cx2_PasoPedido
+--into ##FLAGPASOPEDIDOT1
+--from ##FLAGPASOPEDIDOT b 
+--group by pkebelista;
+-----4945 
+----select * from ##KR_MCC_COMPT where PKebelista=2882009 order by  AnioCampana
+----go
+
+----select * from ##FLAGPASOPEDIDOT1 where PKebelista=2882009 --order by  AnioCampana
+----go
+
+-----------------------FLAG ACTIVO
+
+--IF OBJECT_ID('tempdb.dbo.##FLAG_ACTIVOT', 'U') IS NOT NULL
+--  DROP TABLE ##FLAG_ACTIVOT;
+
+--DECLARE @SQLString6 NVARCHAR(2000);
+
+--SET @SQLString6 = 
+--N'
+--SELECT PKebelista,['+ @AnioCampanamenos2+ '] AS Cx_flagactiva,['+ @AnioCampanamenos1+ '] AS Cx1_flagactiva,['+ @AnioCampana + '] AS Cx2_flagactiva 
+--INTO ##FLAG_ACTIVOT
+--FROM 
+--(SELECT PKebelista,Aniocampana,flagactiva from ##KR_MCC_COMPT ) as SourceTable 
+--PIVOT 
+--(COUNT(flagactiva)
+-- FOR Aniocampana in (['+@AnioCampanamenos2+'],['+@AnioCampanamenos1+'],['+@AnioCampana+'])) AS PivotTable;'
+
+--EXEC sp_executesql @SQLString6;
+
+----SELECT * FROM ##FLAGACTIVO
+----SELECT * FROM ##FLAGACTIVO WHERE [C0_FLAGPASOPEDIDO]>1 or[C1_FLAGPASOPEDIDO]>1 or [C2_FLAGPASOPEDIDO]>1 or [C3_FLAGPASOPEDIDO]>1 or [C4_FLAGPASOPEDIDO]>1 or [C5_FLAGPASOPEDIDO]>1 or [C6_FLAGPASOPEDIDO]>1
+
+--IF OBJECT_ID('tempdb.dbo.##FLAG_ACTIVOT1', 'U') IS NOT NULL
+--  DROP TABLE ##FLAG_ACTIVOT1;
+
+--select pkebelista,
+--(select flagactiva from ##KR_MCC_COMPT a where a.PKEbelista=b.pkebelista and AnioCampana=@AnioCampanamenos2) Cx_Activa,
+--(select flagactiva from ##KR_MCC_COMPT a where a.PKEbelista=b.pkebelista and AnioCampana=@AnioCampanamenos1) Cx1_Activa,
+--(select flagactiva from ##KR_MCC_COMPT a where a.PKEbelista=b.pkebelista and AnioCampana=@AnioCampana) Cx2_Activa
+--into ##FLAG_ACTIVOT1
+--from ##FLAG_ACTIVOT b 
+--group by pkebelista;
+-----4945 
+
+----select * from ##KR_MCC_COMPT where PKebelista=2882009 order by  AnioCampana
+----go
+
+----select * from ##FLAG_ACTIVOT1 where PKebelista=2882009 --order by  AnioCampana
+----go
+
+----------------------TABLA FINAL:
+
+--IF OBJECT_ID('tempdb.dbo.##KR_MCC_TARGET2', 'U') IS NOT NULL
+--  DROP TABLE ##KR_MCC_TARGET2;
+
+--SELECT
+--A.*,
+--C.Cx_Status,
+--C.Cx1_Status,
+--C.Cx2_Status,
+--G.Cx_Activa,
+--G.Cx1_Activa,
+--G.Cx2_Activa,
+--E.Cx_Comp_Rolling,
+--E.Cx1_Comp_Rolling,
+--E.Cx2_Comp_Rolling,
+--F.Cx_PasoPedido,
+--F.Cx1_PasoPedido,
+--F.Cx2_PasoPedido
+--INTO ##KR_MCC_TARGET2
+--FROM 
+--##KR_MCC_TARGET1 A
+--LEFT JOIN ##KR_COD_STATUST1 C   ON A.PKEbelista=C.PKEbelista
+--LEFT JOIN ##KR_COMP_ROLLINGT1 E ON A.PKEbelista=E.PKEbelista
+--LEFT JOIN ##FLAGPASOPEDIDOT1 F ON A.PKEbelista=F.PKEbelista
+--LEFT JOIN ##FLAG_ACTIVOT1 G ON A.PKEbelista=G.PKEbelista;
 
 -- SELECT * FROM ##KR_MCC_DATOS2
 -- SELECT COUNT(1),COUNT(DISTINCT PKEbelista) FROM ##KR_MCC_DATOS2
