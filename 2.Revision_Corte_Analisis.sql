@@ -341,8 +341,6 @@ IF OBJECT_ID('tempdb.dbo.#KR_COD_STATUS', 'U') IS NOT NULL DROP TABLE #KR_COD_ST
 	C18_Cod_Status VARCHAR(15)
 )
 
-
-
 DECLARE @SQLString3 NVARCHAR(2000);
 
 
@@ -388,202 +386,328 @@ PIVOT (MAX(DesStatusCorp) FOR Aniocampana in (['+  @AnioCampanamenos17+ '] ,
 INSERT INTO #KR_COD_STATUS
 EXEC sp_executesql @SQLString3;
 
+UPDATE #KR_COD_STATUS SET C1_Cod_Status  = 0 WHERE C1_Cod_Status  is null or C1_Cod_Status  = ''
+UPDATE #KR_COD_STATUS SET C2_Cod_Status  = 0 WHERE C2_Cod_Status  is null or C2_Cod_Status  = ''
+UPDATE #KR_COD_STATUS SET C3_Cod_Status  = 0 WHERE C3_Cod_Status  is null or C3_Cod_Status  = ''
+UPDATE #KR_COD_STATUS SET C4_Cod_Status  = 0 WHERE C4_Cod_Status  is null or C4_Cod_Status  = ''
+UPDATE #KR_COD_STATUS SET C5_Cod_Status  = 0 WHERE C5_Cod_Status  is null or C5_Cod_Status  = ''
+UPDATE #KR_COD_STATUS SET C6_Cod_Status  = 0 WHERE C6_Cod_Status  is null or C6_Cod_Status  = ''
+UPDATE #KR_COD_STATUS SET C7_Cod_Status  = 0 WHERE C7_Cod_Status  is null or C7_Cod_Status  = ''
+UPDATE #KR_COD_STATUS SET C8_Cod_Status  = 0 WHERE C8_Cod_Status  is null or C8_Cod_Status  = ''
+UPDATE #KR_COD_STATUS SET C9_Cod_Status  = 0 WHERE C9_Cod_Status  is null or C9_Cod_Status  = ''
+UPDATE #KR_COD_STATUS SET C10_Cod_Status = 0 WHERE C10_Cod_Status is null or C10_Cod_Status = ''
+UPDATE #KR_COD_STATUS SET C11_Cod_Status = 0 WHERE C11_Cod_Status is null or C11_Cod_Status = ''
+UPDATE #KR_COD_STATUS SET C12_Cod_Status = 0 WHERE C12_Cod_Status is null or C12_Cod_Status = ''
+UPDATE #KR_COD_STATUS SET C13_Cod_Status = 0 WHERE C13_Cod_Status is null or C13_Cod_Status = ''
+UPDATE #KR_COD_STATUS SET C14_Cod_Status = 0 WHERE C14_Cod_Status is null or C14_Cod_Status = ''
+UPDATE #KR_COD_STATUS SET C15_Cod_Status = 0 WHERE C15_Cod_Status is null or C15_Cod_Status = ''
+UPDATE #KR_COD_STATUS SET C16_Cod_Status = 0 WHERE C16_Cod_Status is null or C16_Cod_Status = ''
+UPDATE #KR_COD_STATUS SET C17_Cod_Status = 0 WHERE C17_Cod_Status is null or C17_Cod_Status = ''
+UPDATE #KR_COD_STATUS SET C18_Cod_Status = 0 WHERE C18_Cod_Status is null or C18_Cod_Status = ''
+
 
 ---------------------FLAG IP UNICO
+IF OBJECT_ID('tempdb.dbo.#FlagIpUnico', 'U') IS NOT NULL DROP TABLE #FlagIpUnico
 
-IF OBJECT_ID('tempdb.dbo.##FLAGIPUNICO', 'U') IS NOT NULL
-  DROP TABLE ##FLAGIPUNICO;
+  CREATE TABLE #FlagIpUnico 
+(
+	PkEbelista INT,
+	C1_FlagIpUnico  VARCHAR(15),
+	C2_FlagIpUnico	 VARCHAR(15),
+	C3_FlagIpUnico	 VARCHAR(15),
+	C4_FlagIpUnico	 VARCHAR(15),
+	C5_FlagIpUnico	 VARCHAR(15),
+	C6_FlagIpUnico	 VARCHAR(15),
+	C7_FlagIpUnico	 VARCHAR(15),
+	C8_FlagIpUnico	 VARCHAR(15),
+	C9_FlagIpUnico  VARCHAR(15),
+	C10_FlagIpUnico VARCHAR(15),
+	C11_FlagIpUnico VARCHAR(15),
+	C12_FlagIpUnico VARCHAR(15),
+	C13_FlagIpUnico VARCHAR(15),
+	C14_FlagIpUnico VARCHAR(15),
+	C15_FlagIpUnico VARCHAR(15),
+	C16_FlagIpUnico VARCHAR(15),
+	C17_FlagIpUnico VARCHAR(15),
+	C18_FlagIpUnico VARCHAR(15)
+)
 
 DECLARE @SQLString4 NVARCHAR(2000);
 
-SET @SQLString4 = 
-N'
-SELECT PKebelista,['+  @AnioCampanamenos17+ '] AS C1_FlagIpUnico,['+  @AnioCampanamenos16+ '] AS C2_FlagIpUnico,['+  @AnioCampanamenos15+ '] AS C3_FlagIpUnico,['+  @AnioCampanamenos14+ '] AS C4_FlagIpUnico,['+  @AnioCampanamenos13+ '] AS C5_FlagIpUnico,['+  @AnioCampanamenos12+ '] AS C6_FlagIpUnico,['+  @AnioCampanamenos11+ '] AS C7_FlagIpUnico,['+  @AnioCampanamenos10+ '] AS C8_FlagIpUnico,['+  @AnioCampanamenos9+ '] AS C9_FlagIpUnico,['+  @AnioCampanamenos8+ '] AS C10_FlagIpUnico,['+  @AnioCampanamenos7+ '] AS C11_FlagIpUnico,['+  @AnioCampanamenos6+ '] AS C12_FlagIpUnico,['+  @AnioCampanamenos5+ '] AS C13_FlagIpUnico,['+  @AnioCampanamenos4+ '] AS C14_FlagIpUnico,['+  @AnioCampanamenos3+ '] AS C15_FlagIpUnico,['+  @AnioCampanamenos2+ '] AS C16_FlagIpUnico,['+  @AnioCampanamenos1+ '] AS C17_FlagIpUnico,['+  @AnioCampana+ '] AS C18_FlagIpUnico
-INTO ##FLAGIPUNICO
-FROM 
-(SELECT PKebelista,Aniocampana,FlagIpUnicoZona from ##KR_MCC_COMP ) as SourceTable 
-PIVOT 
-(COUNT(FlagIpUnicoZona)
- FOR Aniocampana in (['+  @AnioCampanamenos17+ '] ,['+  @AnioCampanamenos16+ '] ,['+  @AnioCampanamenos15+ '] ,['+  @AnioCampanamenos14+ '] ,['+  @AnioCampanamenos13+ '] ,['+  @AnioCampanamenos12+ '] ,['+  @AnioCampanamenos11+ '] ,['+  @AnioCampanamenos10+ '] ,['+  @AnioCampanamenos9+ '] ,['+  @AnioCampanamenos8+ '] ,['+  @AnioCampanamenos7+ '] ,['+  @AnioCampanamenos6+ '] ,['+  @AnioCampanamenos5+ '] ,['+  @AnioCampanamenos4+ '] ,['+  @AnioCampanamenos3+ '] ,['+  @AnioCampanamenos2+ '] ,['+  @AnioCampanamenos1+ '] ,['+  @AnioCampana+ '] )) AS PivotTable;'
 
+SET @SQLString4 = N' SELECT PKebelista,
+					['+  @AnioCampanamenos17+ '] AS C1_FlagIpUnico,
+					['+  @AnioCampanamenos16+ '] AS C2_FlagIpUnico,
+					['+  @AnioCampanamenos15+ '] AS C3_FlagIpUnico,
+					['+  @AnioCampanamenos14+ '] AS C4_FlagIpUnico,
+					['+  @AnioCampanamenos13+ '] AS C5_FlagIpUnico,
+					['+  @AnioCampanamenos12+ '] AS C6_FlagIpUnico,
+					['+  @AnioCampanamenos11+ '] AS C7_FlagIpUnico,
+					['+  @AnioCampanamenos10+ '] AS C8_FlagIpUnico,
+					['+  @AnioCampanamenos9+ '] AS  C9_FlagIpUnico,
+					['+  @AnioCampanamenos8+ '] AS  C10_FlagIpUnico,
+					['+  @AnioCampanamenos7+ '] AS  C11_FlagIpUnico,
+					['+  @AnioCampanamenos6+ '] AS  C12_FlagIpUnico,
+					['+  @AnioCampanamenos5+ '] AS  C13_FlagIpUnico,
+					['+  @AnioCampanamenos4+ '] AS  C14_FlagIpUnico,
+					['+  @AnioCampanamenos3+ '] AS  C15_FlagIpUnico,
+					['+  @AnioCampanamenos2+ '] AS  C16_FlagIpUnico,
+					['+  @AnioCampanamenos1+ '] AS  C17_FlagIpUnico,
+					['+  @AnioCampana+ '] AS C18_FlagIpUnico
+FROM (SELECT PKebelista,Aniocampana,FlagIpUnicoZona from #KR_MCC_COMP ) as SourceTable 
+PIVOT (SUM(FlagIpUnicoZona) FOR Aniocampana in (['+  @AnioCampanamenos17+ '] ,
+					 ['+  @AnioCampanamenos16+ '] ,
+					 ['+  @AnioCampanamenos15+ '] ,
+					 ['+  @AnioCampanamenos14+ '] ,
+					 ['+  @AnioCampanamenos13+ '] ,
+					 ['+  @AnioCampanamenos12+ '] ,
+					 ['+  @AnioCampanamenos11+ '] ,
+					 ['+  @AnioCampanamenos10+ '] ,
+					 ['+  @AnioCampanamenos9+ '] ,
+					 ['+  @AnioCampanamenos8+ '] ,
+					 ['+  @AnioCampanamenos7+ '] ,
+					 ['+  @AnioCampanamenos6+ '] ,
+					 ['+  @AnioCampanamenos5+ '] ,
+					 ['+  @AnioCampanamenos4+ '] ,
+					 ['+  @AnioCampanamenos3+ '] ,
+					 ['+  @AnioCampanamenos2+ '] ,
+					 ['+  @AnioCampanamenos1+ '] ,
+					 ['+  @AnioCampana+ '] )) AS PivotTable;'
+
+INSERT INTO #FlagIpUnico
 EXEC sp_executesql @SQLString4;
 
---SELECT * FROM ##FLAGIPUNICO
---SELECT * FROM ##FLAGIPUNICO WHERE [C0_FLAGIPUNICO]>1 or [C1_FLAGIPUNICO]>1 or [C2_FLAGIPUNICO]>1 or [C3_FLAGIPUNICO]>1 or [C4_FLAGIPUNICO]>1 or [C5_FLAGIPUNICO]>1 or [C6_FLAGIPUNICO]>1
-
-IF OBJECT_ID('tempdb.dbo.##FLAGIPUNICO1', 'U') IS NOT NULL
-  DROP TABLE ##FLAGIPUNICO1;
-
-select pkebelista,
-(select FlagIpUnicoZona from ##KR_MCC_COMP a where a.PKEbelista=b.pkebelista and AnioCampana= @AnioCampanamenos17) C1_FlagIpUnico,
-(select FlagIpUnicoZona from ##KR_MCC_COMP a where a.PKEbelista=b.pkebelista and AnioCampana= @AnioCampanamenos16) C2_FlagIpUnico,
-(select FlagIpUnicoZona from ##KR_MCC_COMP a where a.PKEbelista=b.pkebelista and AnioCampana= @AnioCampanamenos15) C3_FlagIpUnico,
-(select FlagIpUnicoZona from ##KR_MCC_COMP a where a.PKEbelista=b.pkebelista and AnioCampana= @AnioCampanamenos14) C4_FlagIpUnico,
-(select FlagIpUnicoZona from ##KR_MCC_COMP a where a.PKEbelista=b.pkebelista and AnioCampana= @AnioCampanamenos13) C5_FlagIpUnico,
-(select FlagIpUnicoZona from ##KR_MCC_COMP a where a.PKEbelista=b.pkebelista and AnioCampana= @AnioCampanamenos12) C6_FlagIpUnico,
-(select FlagIpUnicoZona from ##KR_MCC_COMP a where a.PKEbelista=b.pkebelista and AnioCampana= @AnioCampanamenos11) C7_FlagIpUnico,
-(select FlagIpUnicoZona from ##KR_MCC_COMP a where a.PKEbelista=b.pkebelista and AnioCampana= @AnioCampanamenos10) C8_FlagIpUnico,
-(select FlagIpUnicoZona from ##KR_MCC_COMP a where a.PKEbelista=b.pkebelista and AnioCampana= @AnioCampanamenos9) C9_FlagIpUnico,
-(select FlagIpUnicoZona from ##KR_MCC_COMP a where a.PKEbelista=b.pkebelista and AnioCampana= @AnioCampanamenos8) C10_FlagIpUnico,
-(select FlagIpUnicoZona from ##KR_MCC_COMP a where a.PKEbelista=b.pkebelista and AnioCampana= @AnioCampanamenos7) C11_FlagIpUnico,
-(select FlagIpUnicoZona from ##KR_MCC_COMP a where a.PKEbelista=b.pkebelista and AnioCampana= @AnioCampanamenos6) C12_FlagIpUnico,
-(select FlagIpUnicoZona from ##KR_MCC_COMP a where a.PKEbelista=b.pkebelista and AnioCampana= @AnioCampanamenos5) C13_FlagIpUnico,
-(select FlagIpUnicoZona from ##KR_MCC_COMP a where a.PKEbelista=b.pkebelista and AnioCampana= @AnioCampanamenos4) C14_FlagIpUnico,
-(select FlagIpUnicoZona from ##KR_MCC_COMP a where a.PKEbelista=b.pkebelista and AnioCampana= @AnioCampanamenos3) C15_FlagIpUnico,
-(select FlagIpUnicoZona from ##KR_MCC_COMP a where a.PKEbelista=b.pkebelista and AnioCampana= @AnioCampanamenos2) C16_FlagIpUnico,
-(select FlagIpUnicoZona from ##KR_MCC_COMP a where a.PKEbelista=b.pkebelista and AnioCampana= @AnioCampanamenos1) C17_FlagIpUnico,
-(select FlagIpUnicoZona from ##KR_MCC_COMP a where a.PKEbelista=b.pkebelista and AnioCampana= @AnioCampana) C18_FlagIpUnico
-into ##FLAGIPUNICO1
-from ##FLAGIPUNICO b 
-group by pkebelista;
----4945 
-
---select * from ##KR_MCC_COMP where PKebelista=48023 order by  AnioCampana
---go
-
---select * from ##FLAGIPUNICO1 where PKebelista=48023 --order by  AnioCampana
-----go
+UPDATE #FlagIpUnico SET C1_FlagIpUnico  = 0 WHERE C1_FlagIpUnico  is null or C1_FlagIpUnico  = ''
+UPDATE #FlagIpUnico SET C2_FlagIpUnico  = 0 WHERE C2_FlagIpUnico  is null or C2_FlagIpUnico  = ''
+UPDATE #FlagIpUnico SET C3_FlagIpUnico  = 0 WHERE C3_FlagIpUnico  is null or C3_FlagIpUnico  = ''
+UPDATE #FlagIpUnico SET C4_FlagIpUnico  = 0 WHERE C4_FlagIpUnico  is null or C4_FlagIpUnico  = ''
+UPDATE #FlagIpUnico SET C5_FlagIpUnico  = 0 WHERE C5_FlagIpUnico  is null or C5_FlagIpUnico  = ''
+UPDATE #FlagIpUnico SET C6_FlagIpUnico  = 0 WHERE C6_FlagIpUnico  is null or C6_FlagIpUnico  = ''
+UPDATE #FlagIpUnico SET C7_FlagIpUnico  = 0 WHERE C7_FlagIpUnico  is null or C7_FlagIpUnico  = ''
+UPDATE #FlagIpUnico SET C8_FlagIpUnico  = 0 WHERE C8_FlagIpUnico  is null or C8_FlagIpUnico  = ''
+UPDATE #FlagIpUnico SET C9_FlagIpUnico  = 0 WHERE C9_FlagIpUnico  is null or C9_FlagIpUnico  = ''
+UPDATE #FlagIpUnico SET C10_FlagIpUnico = 0 WHERE C10_FlagIpUnico is null or C10_FlagIpUnico = ''
+UPDATE #FlagIpUnico SET C11_FlagIpUnico = 0 WHERE C11_FlagIpUnico is null or C11_FlagIpUnico = ''
+UPDATE #FlagIpUnico SET C12_FlagIpUnico = 0 WHERE C12_FlagIpUnico is null or C12_FlagIpUnico = ''
+UPDATE #FlagIpUnico SET C13_FlagIpUnico = 0 WHERE C13_FlagIpUnico is null or C13_FlagIpUnico = ''
+UPDATE #FlagIpUnico SET C14_FlagIpUnico = 0 WHERE C14_FlagIpUnico is null or C14_FlagIpUnico = ''
+UPDATE #FlagIpUnico SET C15_FlagIpUnico = 0 WHERE C15_FlagIpUnico is null or C15_FlagIpUnico = ''
+UPDATE #FlagIpUnico SET C16_FlagIpUnico = 0 WHERE C16_FlagIpUnico is null or C16_FlagIpUnico = ''
+UPDATE #FlagIpUnico SET C17_FlagIpUnico = 0 WHERE C17_FlagIpUnico is null or C17_FlagIpUnico = ''
+UPDATE #FlagIpUnico SET C18_FlagIpUnico = 0 WHERE C18_FlagIpUnico is null or C18_FlagIpUnico = ''
 
 
----------------------FLAG PASO PEDIDO
+---------------------FLAG PASO PEDIDO - 
+IF OBJECT_ID('tempdb.dbo.#FLAGPASOPEDIDO', 'U') IS NOT NULL DROP TABLE #FLAGPASOPEDIDO
 
-IF OBJECT_ID('tempdb.dbo.##FLAGPASOPEDIDO', 'U') IS NOT NULL
-  DROP TABLE ##FLAGPASOPEDIDO;
+CREATE TABLE #FLAGPASOPEDIDO 
+	(
+		PkEbelista INT,
+		C1_FlagPasoPedido  VARCHAR(15),
+		C2_FlagPasoPedido  VARCHAR(15),
+		C3_FlagPasoPedido  VARCHAR(15),
+		C4_FlagPasoPedido  VARCHAR(15),
+		C5_FlagPasoPedido  VARCHAR(15),
+		C6_FlagPasoPedido  VARCHAR(15),
+		C7_FlagPasoPedido  VARCHAR(15),
+		C8_FlagPasoPedido  VARCHAR(15),
+		C9_FlagPasoPedido  VARCHAR(15),
+		C10_FlagPasoPedido VARCHAR(15),
+		C11_FlagPasoPedido VARCHAR(15),
+		C12_FlagPasoPedido VARCHAR(15),
+		C13_FlagPasoPedido VARCHAR(15),
+		C14_FlagPasoPedido VARCHAR(15),
+		C15_FlagPasoPedido VARCHAR(15),
+		C16_FlagPasoPedido VARCHAR(15),
+		C17_FlagPasoPedido VARCHAR(15),
+		C18_FlagPasoPedido VARCHAR(15)
+	)
 
 DECLARE @SQLString5 NVARCHAR(2000);
 
-SET @SQLString5 = 
-N'
-SELECT PKebelista,['+  @AnioCampanamenos17+ '] AS C1_FlagPasoPedido,['+  @AnioCampanamenos16+ '] AS C2_FlagPasoPedido,['+  @AnioCampanamenos15+ '] AS C3_FlagPasoPedido,['+  @AnioCampanamenos14+ '] AS C4_FlagPasoPedido,['+  @AnioCampanamenos13+ '] AS C5_FlagPasoPedido,['+  @AnioCampanamenos12+ '] AS C6_FlagPasoPedido,['+  @AnioCampanamenos11+ '] AS C7_FlagPasoPedido,['+  @AnioCampanamenos10+ '] AS C8_FlagPasoPedido,['+  @AnioCampanamenos9+ '] AS C9_FlagPasoPedido,['+  @AnioCampanamenos8+ '] AS C10_FlagPasoPedido,['+  @AnioCampanamenos7+ '] AS C11_FlagPasoPedido,['+  @AnioCampanamenos6+ '] AS C12_FlagPasoPedido,['+  @AnioCampanamenos5+ '] AS C13_FlagPasoPedido,['+  @AnioCampanamenos4+ '] AS C14_FlagPasoPedido,['+  @AnioCampanamenos3+ '] AS C15_FlagPasoPedido,['+  @AnioCampanamenos2+ '] AS C16_FlagPasoPedido,['+  @AnioCampanamenos1+ '] AS C17_FlagPasoPedido,['+  @AnioCampana+ '] AS C18_FlagPasoPedido
 
-INTO ##FLAGPASOPEDIDO
-FROM 
-(SELECT PKebelista,Aniocampana,FlagPasoPedido from ##KR_MCC_COMP ) as SourceTable 
-PIVOT 
-(COUNT(FlagPasoPedido)
- FOR Aniocampana in (['+  @AnioCampanamenos17+ '] ,['+  @AnioCampanamenos16+ '] ,['+  @AnioCampanamenos15+ '] ,['+  @AnioCampanamenos14+ '] ,['+  @AnioCampanamenos13+ '] ,['+  @AnioCampanamenos12+ '] ,['+  @AnioCampanamenos11+ '] ,['+  @AnioCampanamenos10+ '] ,['+  @AnioCampanamenos9+ '] ,['+  @AnioCampanamenos8+ '] ,['+  @AnioCampanamenos7+ '] ,['+  @AnioCampanamenos6+ '] ,['+  @AnioCampanamenos5+ '] ,['+  @AnioCampanamenos4+ '] ,['+  @AnioCampanamenos3+ '] ,['+  @AnioCampanamenos2+ '] ,['+  @AnioCampanamenos1+ '] ,['+  @AnioCampana+ '] )) AS PivotTable;'
+SET @SQLString5 = N' SELECT PKebelista,
+					['+  @AnioCampanamenos17+ '] AS C1_FlagPasoPedido,
+					['+  @AnioCampanamenos16+ '] AS C2_FlagPasoPedido,
+					['+  @AnioCampanamenos15+ '] AS C3_FlagPasoPedido,
+					['+  @AnioCampanamenos14+ '] AS C4_FlagPasoPedido,
+					['+  @AnioCampanamenos13+ '] AS C5_FlagPasoPedido,
+					['+  @AnioCampanamenos12+ '] AS C6_FlagPasoPedido,
+					['+  @AnioCampanamenos11+ '] AS C7_FlagPasoPedido,
+					['+  @AnioCampanamenos10+ '] AS C8_FlagPasoPedido,
+					['+  @AnioCampanamenos9+ '] AS  C9_FlagPasoPedido,
+					['+  @AnioCampanamenos8+ '] AS  C10_FlagPasoPedido,
+					['+  @AnioCampanamenos7+ '] AS  C11_FlagPasoPedido,
+					['+  @AnioCampanamenos6+ '] AS  C12_FlagPasoPedido,
+					['+  @AnioCampanamenos5+ '] AS  C13_FlagPasoPedido,
+					['+  @AnioCampanamenos4+ '] AS  C14_FlagPasoPedido,
+					['+  @AnioCampanamenos3+ '] AS  C15_FlagPasoPedido,
+					['+  @AnioCampanamenos2+ '] AS  C16_FlagPasoPedido,
+					['+  @AnioCampanamenos1+ '] AS  C17_FlagPasoPedido,
+					['+  @AnioCampana+ '] AS C18_FlagPasoPedido
+FROM (SELECT PKebelista,Aniocampana,FlagPasoPedido from #KR_MCC_COMP ) as SourceTable 
+PIVOT (MAX(FlagPasoPedido) FOR Aniocampana in (['+  @AnioCampanamenos17+ '] ,
+					 ['+  @AnioCampanamenos16+ '] ,
+					 ['+  @AnioCampanamenos15+ '] ,
+					 ['+  @AnioCampanamenos14+ '] ,
+					 ['+  @AnioCampanamenos13+ '] ,
+					 ['+  @AnioCampanamenos12+ '] ,
+					 ['+  @AnioCampanamenos11+ '] ,
+					 ['+  @AnioCampanamenos10+ '] ,
+					 ['+  @AnioCampanamenos9+ '] ,
+					 ['+  @AnioCampanamenos8+ '] ,
+					 ['+  @AnioCampanamenos7+ '] ,
+					 ['+  @AnioCampanamenos6+ '] ,
+					 ['+  @AnioCampanamenos5+ '] ,
+					 ['+  @AnioCampanamenos4+ '] ,
+					 ['+  @AnioCampanamenos3+ '] ,
+					 ['+  @AnioCampanamenos2+ '] ,
+					 ['+  @AnioCampanamenos1+ '] ,
+					 ['+  @AnioCampana+ '] )) AS PivotTable;'
 
+INSERT INTO #FLAGPASOPEDIDO
 EXEC sp_executesql @SQLString5;
 
---SELECT * FROM ##FLAGPASOPEDIDO
---SELECT * FROM ##FLAGPASOPEDIDO WHERE [C0_FLAGPASOPEDIDO]>1 or[C1_FLAGPASOPEDIDO]>1 or [C2_FLAGPASOPEDIDO]>1 or [C3_FLAGPASOPEDIDO]>1 or [C4_FLAGPASOPEDIDO]>1 or [C5_FLAGPASOPEDIDO]>1 or [C6_FLAGPASOPEDIDO]>1
-
-IF OBJECT_ID('tempdb.dbo.##FLAGPASOPEDIDO1', 'U') IS NOT NULL
-  DROP TABLE ##FLAGPASOPEDIDO1;
-
-select pkebelista,
-(select FlagPasoPedido from ##KR_MCC_COMP a where a.PKEbelista=b.pkebelista and AnioCampana= @AnioCampanamenos17) C1_FlagPasoPedido,
-(select FlagPasoPedido from ##KR_MCC_COMP a where a.PKEbelista=b.pkebelista and AnioCampana= @AnioCampanamenos16) C2_FlagPasoPedido,
-(select FlagPasoPedido from ##KR_MCC_COMP a where a.PKEbelista=b.pkebelista and AnioCampana= @AnioCampanamenos15) C3_FlagPasoPedido,
-(select FlagPasoPedido from ##KR_MCC_COMP a where a.PKEbelista=b.pkebelista and AnioCampana= @AnioCampanamenos14) C4_FlagPasoPedido,
-(select FlagPasoPedido from ##KR_MCC_COMP a where a.PKEbelista=b.pkebelista and AnioCampana= @AnioCampanamenos13) C5_FlagPasoPedido,
-(select FlagPasoPedido from ##KR_MCC_COMP a where a.PKEbelista=b.pkebelista and AnioCampana= @AnioCampanamenos12) C6_FlagPasoPedido,
-(select FlagPasoPedido from ##KR_MCC_COMP a where a.PKEbelista=b.pkebelista and AnioCampana= @AnioCampanamenos11) C7_FlagPasoPedido,
-(select FlagPasoPedido from ##KR_MCC_COMP a where a.PKEbelista=b.pkebelista and AnioCampana= @AnioCampanamenos10) C8_FlagPasoPedido,
-(select FlagPasoPedido from ##KR_MCC_COMP a where a.PKEbelista=b.pkebelista and AnioCampana= @AnioCampanamenos9) C9_FlagPasoPedido,
-(select FlagPasoPedido from ##KR_MCC_COMP a where a.PKEbelista=b.pkebelista and AnioCampana= @AnioCampanamenos8) C10_FlagPasoPedido,
-(select FlagPasoPedido from ##KR_MCC_COMP a where a.PKEbelista=b.pkebelista and AnioCampana= @AnioCampanamenos7) C11_FlagPasoPedido,
-(select FlagPasoPedido from ##KR_MCC_COMP a where a.PKEbelista=b.pkebelista and AnioCampana= @AnioCampanamenos6) C12_FlagPasoPedido,
-(select FlagPasoPedido from ##KR_MCC_COMP a where a.PKEbelista=b.pkebelista and AnioCampana= @AnioCampanamenos5) C13_FlagPasoPedido,
-(select FlagPasoPedido from ##KR_MCC_COMP a where a.PKEbelista=b.pkebelista and AnioCampana= @AnioCampanamenos4) C14_FlagPasoPedido,
-(select FlagPasoPedido from ##KR_MCC_COMP a where a.PKEbelista=b.pkebelista and AnioCampana= @AnioCampanamenos3) C15_FlagPasoPedido,
-(select FlagPasoPedido from ##KR_MCC_COMP a where a.PKEbelista=b.pkebelista and AnioCampana= @AnioCampanamenos2) C16_FlagPasoPedido,
-(select FlagPasoPedido from ##KR_MCC_COMP a where a.PKEbelista=b.pkebelista and AnioCampana= @AnioCampanamenos1) C17_FlagPasoPedido,
-(select FlagPasoPedido from ##KR_MCC_COMP a where a.PKEbelista=b.pkebelista and AnioCampana= @AnioCampana) C18_FlagPasoPedido
-into ##FLAGPASOPEDIDO1
-from ##FLAGPASOPEDIDO b 
-group by pkebelista;
----4945 
+UPDATE #FLAGPASOPEDIDO SET C1_FlagPasoPedido  = 0 WHERE C1_FlagPasoPedido  is null or C1_FlagPasoPedido  = ''
+UPDATE #FLAGPASOPEDIDO SET C2_FlagPasoPedido  = 0 WHERE C2_FlagPasoPedido  is null or C2_FlagPasoPedido  = ''
+UPDATE #FLAGPASOPEDIDO SET C3_FlagPasoPedido  = 0 WHERE C3_FlagPasoPedido  is null or C3_FlagPasoPedido  = ''
+UPDATE #FLAGPASOPEDIDO SET C4_FlagPasoPedido  = 0 WHERE C4_FlagPasoPedido  is null or C4_FlagPasoPedido  = ''
+UPDATE #FLAGPASOPEDIDO SET C5_FlagPasoPedido  = 0 WHERE C5_FlagPasoPedido  is null or C5_FlagPasoPedido  = ''
+UPDATE #FLAGPASOPEDIDO SET C6_FlagPasoPedido  = 0 WHERE C6_FlagPasoPedido  is null or C6_FlagPasoPedido  = ''
+UPDATE #FLAGPASOPEDIDO SET C7_FlagPasoPedido  = 0 WHERE C7_FlagPasoPedido  is null or C7_FlagPasoPedido  = ''
+UPDATE #FLAGPASOPEDIDO SET C8_FlagPasoPedido  = 0 WHERE C8_FlagPasoPedido  is null or C8_FlagPasoPedido  = ''
+UPDATE #FLAGPASOPEDIDO SET C9_FlagPasoPedido  = 0 WHERE C9_FlagPasoPedido  is null or C9_FlagPasoPedido  = ''
+UPDATE #FLAGPASOPEDIDO SET C10_FlagPasoPedido = 0 WHERE C10_FlagPasoPedido is null or C10_FlagPasoPedido = ''
+UPDATE #FLAGPASOPEDIDO SET C11_FlagPasoPedido = 0 WHERE C11_FlagPasoPedido is null or C11_FlagPasoPedido = ''
+UPDATE #FLAGPASOPEDIDO SET C12_FlagPasoPedido = 0 WHERE C12_FlagPasoPedido is null or C12_FlagPasoPedido = ''
+UPDATE #FLAGPASOPEDIDO SET C13_FlagPasoPedido = 0 WHERE C13_FlagPasoPedido is null or C13_FlagPasoPedido = ''
+UPDATE #FLAGPASOPEDIDO SET C14_FlagPasoPedido = 0 WHERE C14_FlagPasoPedido is null or C14_FlagPasoPedido = ''
+UPDATE #FLAGPASOPEDIDO SET C15_FlagPasoPedido = 0 WHERE C15_FlagPasoPedido is null or C15_FlagPasoPedido = ''
+UPDATE #FLAGPASOPEDIDO SET C16_FlagPasoPedido = 0 WHERE C16_FlagPasoPedido is null or C16_FlagPasoPedido = ''
+UPDATE #FLAGPASOPEDIDO SET C17_FlagPasoPedido = 0 WHERE C17_FlagPasoPedido is null or C17_FlagPasoPedido = ''
+UPDATE #FLAGPASOPEDIDO SET C18_FlagPasoPedido = 0 WHERE C18_FlagPasoPedido is null or C18_FlagPasoPedido = ''
 
 
 ---------------------FLAG ACTIVA
+IF OBJECT_ID('tempdb.dbo.#FLAGACTIVA', 'U') IS NOT NULL DROP TABLE #FLAGACTIVA
 
-IF OBJECT_ID('tempdb.dbo.##FLAGACTIVA', 'U') IS NOT NULL
-  DROP TABLE ##FLAGACTIVA;
+CREATE TABLE #FLAGACTIVA 
+	(
+		PkEbelista INT,
+		C1_FlagActiva  VARCHAR(15),
+		C2_FlagActiva  VARCHAR(15),
+		C3_FlagActiva  VARCHAR(15),
+		C4_FlagActiva  VARCHAR(15),
+		C5_FlagActiva  VARCHAR(15),
+		C6_FlagActiva  VARCHAR(15),
+		C7_FlagActiva  VARCHAR(15),
+		C8_FlagActiva  VARCHAR(15),
+		C9_FlagActiva  VARCHAR(15),
+		C10_FlagActiva VARCHAR(15),
+		C11_FlagActiva VARCHAR(15),
+		C12_FlagActiva VARCHAR(15),
+		C13_FlagActiva VARCHAR(15),
+		C14_FlagActiva VARCHAR(15),
+		C15_FlagActiva VARCHAR(15),
+		C16_FlagActiva VARCHAR(15),
+		C17_FlagActiva VARCHAR(15),
+		C18_FlagActiva VARCHAR(15)
+	)
 
 DECLARE @SQLString6 NVARCHAR(2000);
 
-SET @SQLString6 = 
-N'
-SELECT PKebelista,['+  @AnioCampanamenos17+ '] AS C1_FlagActiva,['+  @AnioCampanamenos16+ '] AS C2_FlagActiva,['+  @AnioCampanamenos15+ '] AS C3_FlagActiva,['+  @AnioCampanamenos14+ '] AS C4_FlagActiva,['+  @AnioCampanamenos13+ '] AS C5_FlagActiva,['+  @AnioCampanamenos12+ '] AS C6_FlagActiva,['+  @AnioCampanamenos11+ '] AS C7_FlagActiva,['+  @AnioCampanamenos10+ '] AS C8_FlagActiva,['+  @AnioCampanamenos9+ '] AS C9_FlagActiva,['+  @AnioCampanamenos8+ '] AS C10_FlagActiva,['+  @AnioCampanamenos7+ '] AS C11_FlagActiva,['+  @AnioCampanamenos6+ '] AS C12_FlagActiva,['+  @AnioCampanamenos5+ '] AS C13_FlagActiva,['+  @AnioCampanamenos4+ '] AS C14_FlagActiva,['+  @AnioCampanamenos3+ '] AS C15_FlagActiva,['+  @AnioCampanamenos2+ '] AS C16_FlagActiva,['+  @AnioCampanamenos1+ '] AS C17_FlagActiva,['+  @AnioCampana+ '] AS C18_FlagActiva
-INTO ##FLAGACTIVA
-FROM 
-(SELECT PKebelista,Aniocampana,FlagActiva from ##KR_MCC_COMP ) as SourceTable 
-PIVOT 
-(COUNT(FlagActiva)
- FOR Aniocampana in (['+  @AnioCampanamenos17+ '] ,['+  @AnioCampanamenos16+ '] ,['+  @AnioCampanamenos15+ '] ,['+  @AnioCampanamenos14+ '] ,['+  @AnioCampanamenos13+ '] ,['+  @AnioCampanamenos12+ '] ,['+  @AnioCampanamenos11+ '] ,['+  @AnioCampanamenos10+ '] ,['+  @AnioCampanamenos9+ '] ,['+  @AnioCampanamenos8+ '] ,['+  @AnioCampanamenos7+ '] ,['+  @AnioCampanamenos6+ '] ,['+  @AnioCampanamenos5+ '] ,['+  @AnioCampanamenos4+ '] ,['+  @AnioCampanamenos3+ '] ,['+  @AnioCampanamenos2+ '] ,['+  @AnioCampanamenos1+ '] ,['+  @AnioCampana+ '] )) AS PivotTable;'
 
+SET @SQLString6 = N' SELECT PKebelista,
+					['+  @AnioCampanamenos17+ '] AS C1_FlagActiva,
+					['+  @AnioCampanamenos16+ '] AS C2_FlagActiva,
+					['+  @AnioCampanamenos15+ '] AS C3_FlagActiva,
+					['+  @AnioCampanamenos14+ '] AS C4_FlagActiva,
+					['+  @AnioCampanamenos13+ '] AS C5_FlagActiva,
+					['+  @AnioCampanamenos12+ '] AS C6_FlagActiva,
+					['+  @AnioCampanamenos11+ '] AS C7_FlagActiva,
+					['+  @AnioCampanamenos10+ '] AS C8_FlagActiva,
+					['+  @AnioCampanamenos9+ '] AS  C9_FlagActiva,
+					['+  @AnioCampanamenos8+ '] AS  C10_FlagActiva,
+					['+  @AnioCampanamenos7+ '] AS  C11_FlagActiva,
+					['+  @AnioCampanamenos6+ '] AS  C12_FlagActiva,
+					['+  @AnioCampanamenos5+ '] AS  C13_FlagActiva,
+					['+  @AnioCampanamenos4+ '] AS  C14_FlagActiva,
+					['+  @AnioCampanamenos3+ '] AS  C15_FlagActiva,
+					['+  @AnioCampanamenos2+ '] AS  C16_FlagActiva,
+					['+  @AnioCampanamenos1+ '] AS  C17_FlagActiva,
+					['+  @AnioCampana+ '] AS C18_FlagActiva
+FROM (SELECT PKebelista,Aniocampana,FlagActiva from #KR_MCC_COMP ) as SourceTable 
+PIVOT (MAX(FlagActiva) FOR Aniocampana in (['+  @AnioCampanamenos17+ '] ,
+					 ['+  @AnioCampanamenos16+ '] ,
+					 ['+  @AnioCampanamenos15+ '] ,
+					 ['+  @AnioCampanamenos14+ '] ,
+					 ['+  @AnioCampanamenos13+ '] ,
+					 ['+  @AnioCampanamenos12+ '] ,
+					 ['+  @AnioCampanamenos11+ '] ,
+					 ['+  @AnioCampanamenos10+ '] ,
+					 ['+  @AnioCampanamenos9+ '] ,
+					 ['+  @AnioCampanamenos8+ '] ,
+					 ['+  @AnioCampanamenos7+ '] ,
+					 ['+  @AnioCampanamenos6+ '] ,
+					 ['+  @AnioCampanamenos5+ '] ,
+					 ['+  @AnioCampanamenos4+ '] ,
+					 ['+  @AnioCampanamenos3+ '] ,
+					 ['+  @AnioCampanamenos2+ '] ,
+					 ['+  @AnioCampanamenos1+ '] ,
+					 ['+  @AnioCampana+ '] )) AS PivotTable;'
+
+INSERT INTO #FLAGACTIVA
 EXEC sp_executesql @SQLString6;
 
---SELECT * FROM ##FLAGPASOPEDIDO
---SELECT * FROM ##FLAGPASOPEDIDO WHERE [C0_FLAGPASOPEDIDO]>1 or[C1_FLAGPASOPEDIDO]>1 or [C2_FLAGPASOPEDIDO]>1 or [C3_FLAGPASOPEDIDO]>1 or [C4_FLAGPASOPEDIDO]>1 or [C5_FLAGPASOPEDIDO]>1 or [C6_FLAGPASOPEDIDO]>1
-
-IF OBJECT_ID('tempdb.dbo.##FLAGACTIVA1', 'U') IS NOT NULL
-  DROP TABLE ##FLAGACTIVA1;
-
-select pkebelista,
-(select FlagActiva from ##KR_MCC_COMP a where a.PKEbelista=b.pkebelista and AnioCampana= @AnioCampanamenos17) C1_FlagActiva,
-(select FlagActiva from ##KR_MCC_COMP a where a.PKEbelista=b.pkebelista and AnioCampana= @AnioCampanamenos16) C2_FlagActiva,
-(select FlagActiva from ##KR_MCC_COMP a where a.PKEbelista=b.pkebelista and AnioCampana= @AnioCampanamenos15) C3_FlagActiva,
-(select FlagActiva from ##KR_MCC_COMP a where a.PKEbelista=b.pkebelista and AnioCampana= @AnioCampanamenos14) C4_FlagActiva,
-(select FlagActiva from ##KR_MCC_COMP a where a.PKEbelista=b.pkebelista and AnioCampana= @AnioCampanamenos13) C5_FlagActiva,
-(select FlagActiva from ##KR_MCC_COMP a where a.PKEbelista=b.pkebelista and AnioCampana= @AnioCampanamenos12) C6_FlagActiva,
-(select FlagActiva from ##KR_MCC_COMP a where a.PKEbelista=b.pkebelista and AnioCampana= @AnioCampanamenos11) C7_FlagActiva,
-(select FlagActiva from ##KR_MCC_COMP a where a.PKEbelista=b.pkebelista and AnioCampana= @AnioCampanamenos10) C8_FlagActiva,
-(select FlagActiva from ##KR_MCC_COMP a where a.PKEbelista=b.pkebelista and AnioCampana= @AnioCampanamenos9) C9_FlagActiva,
-(select FlagActiva from ##KR_MCC_COMP a where a.PKEbelista=b.pkebelista and AnioCampana= @AnioCampanamenos8) C10_FlagActiva,
-(select FlagActiva from ##KR_MCC_COMP a where a.PKEbelista=b.pkebelista and AnioCampana= @AnioCampanamenos7) C11_FlagActiva,
-(select FlagActiva from ##KR_MCC_COMP a where a.PKEbelista=b.pkebelista and AnioCampana= @AnioCampanamenos6) C12_FlagActiva,
-(select FlagActiva from ##KR_MCC_COMP a where a.PKEbelista=b.pkebelista and AnioCampana= @AnioCampanamenos5) C13_FlagActiva,
-(select FlagActiva from ##KR_MCC_COMP a where a.PKEbelista=b.pkebelista and AnioCampana= @AnioCampanamenos4) C14_FlagActiva,
-(select FlagActiva from ##KR_MCC_COMP a where a.PKEbelista=b.pkebelista and AnioCampana= @AnioCampanamenos3) C15_FlagActiva,
-(select FlagActiva from ##KR_MCC_COMP a where a.PKEbelista=b.pkebelista and AnioCampana= @AnioCampanamenos2) C16_FlagActiva,
-(select FlagActiva from ##KR_MCC_COMP a where a.PKEbelista=b.pkebelista and AnioCampana= @AnioCampanamenos1) C17_FlagActiva,
-(select FlagActiva from ##KR_MCC_COMP a where a.PKEbelista=b.pkebelista and AnioCampana= @AnioCampana) C18_FlagActiva
-into ##FLAGACTIVA1
-from ##FLAGACTIVA b 
-group by pkebelista;
----4945 
-
+UPDATE #FLAGACTIVA SET C1_FlagActiva  = 0 WHERE C1_FlagActiva  is null or C1_FlagActiva  = ''
+UPDATE #FLAGACTIVA SET C2_FlagActiva  = 0 WHERE C2_FlagActiva  is null or C2_FlagActiva  = ''
+UPDATE #FLAGACTIVA SET C3_FlagActiva  = 0 WHERE C3_FlagActiva  is null or C3_FlagActiva  = ''
+UPDATE #FLAGACTIVA SET C4_FlagActiva  = 0 WHERE C4_FlagActiva  is null or C4_FlagActiva  = ''
+UPDATE #FLAGACTIVA SET C5_FlagActiva  = 0 WHERE C5_FlagActiva  is null or C5_FlagActiva  = ''
+UPDATE #FLAGACTIVA SET C6_FlagActiva  = 0 WHERE C6_FlagActiva  is null or C6_FlagActiva  = ''
+UPDATE #FLAGACTIVA SET C7_FlagActiva  = 0 WHERE C7_FlagActiva  is null or C7_FlagActiva  = ''
+UPDATE #FLAGACTIVA SET C8_FlagActiva  = 0 WHERE C8_FlagActiva  is null or C8_FlagActiva  = ''
+UPDATE #FLAGACTIVA SET C9_FlagActiva  = 0 WHERE C9_FlagActiva  is null or C9_FlagActiva  = ''
+UPDATE #FLAGACTIVA SET C10_FlagActiva = 0 WHERE C10_FlagActiva is null or C10_FlagActiva = ''
+UPDATE #FLAGACTIVA SET C11_FlagActiva = 0 WHERE C11_FlagActiva is null or C11_FlagActiva = ''
+UPDATE #FLAGACTIVA SET C12_FlagActiva = 0 WHERE C12_FlagActiva is null or C12_FlagActiva = ''
+UPDATE #FLAGACTIVA SET C13_FlagActiva = 0 WHERE C13_FlagActiva is null or C13_FlagActiva = ''
+UPDATE #FLAGACTIVA SET C14_FlagActiva = 0 WHERE C14_FlagActiva is null or C14_FlagActiva = ''
+UPDATE #FLAGACTIVA SET C15_FlagActiva = 0 WHERE C15_FlagActiva is null or C15_FlagActiva = ''
+UPDATE #FLAGACTIVA SET C16_FlagActiva = 0 WHERE C16_FlagActiva is null or C16_FlagActiva = ''
+UPDATE #FLAGACTIVA SET C17_FlagActiva = 0 WHERE C17_FlagActiva is null or C17_FlagActiva = ''
+UPDATE #FLAGACTIVA SET C18_FlagActiva = 0 WHERE C18_FlagActiva is null or C18_FlagActiva = ''
 
 ----------------Antiguedad Ultimo Pedido
 
-IF OBJECT_ID('tempdb.dbo.##KR_MCC_ANT', 'U') IS NOT NULL
-  DROP TABLE ##KR_MCC_ANT;
+IF OBJECT_ID('tempdb.dbo.#KR_MCC_ANT', 'U') IS NOT NULL DROP TABLE #KR_MCC_ANT;
 
 SELECT C.PKebelista,MAX(C.AnioCampana) AS AnioCampanaUltimoPedido
-into ##KR_MCC_ANT
-from 
-##KR_MCC_DATOS1 A
-INNER JOIN [DWH_ANALITICO].[dbo].[DWH_FSTAEBECAM] C ON ltrim(rtrim(A.PKEBELISTA)) = ltrim(rtrim(C.PKEbelista)) and ltrim(rtrim(C.AnioCampana))<=ltrim(rtrim(@AnioCampana)) AND C.CODPAIS=@CodPais AND C.FlagPasoPedido=1 
+into #KR_MCC_ANT
+from #KR_MCC_DATOS1 A
+INNER JOIN [DWH_ANALITICO].[dbo].[DWH_FSTAEBECAM] C ON A.PKEBELISTA = C.PKEbelista and C.CodPais= A.CodPais 
+WHERE C.AnioCampana <= @AnioCampana AND C.FlagPasoPedido=1 
 group by C.PKebelista
-
---SELECT * FROM FSTAEBECAMC01
 
 ----------------Antiguedad Ultimo Pedido WEB
 
-IF OBJECT_ID('tempdb.dbo.##KR_MCC_ANTW', 'U') IS NOT NULL
-  DROP TABLE ##KR_MCC_ANTW;
+IF OBJECT_ID('tempdb.dbo.#KR_MCC_ANTW', 'U') IS NOT NULL DROP TABLE #KR_MCC_ANTW;
 
 SELECT C.PKebelista,MAX(C.AnioCampana) AS AnioCampanaUltimoPedidoWeb
-into ##KR_MCC_ANTW
-from 
-##KR_MCC_DATOS1 A
-INNER JOIN [DWH_ANALITICO].[dbo].[DWH_FSTAEBECAM] C ON ltrim(rtrim(A.PKEBELISTA)) = ltrim(rtrim(C.PKEbelista)) and ltrim(rtrim(C.AnioCampana))<=ltrim(rtrim(@AnioCampana))  AND C.CODPAIS=@CodPais AND C.FlagPasoPedido=1 AND C.codigofacturainternet in ('WEB','WMX')
+into #KR_MCC_ANTW
+from #KR_MCC_DATOS1 A
+INNER JOIN [DWH_ANALITICO].[dbo].[DWH_FSTAEBECAM] C ON A.PKEBELISTA = C.PKEbelista  AND C.CodPais = A.CodPais 
+WHERE C.codigofacturainternet in ('WEB','WMX','APP','APM','APW') AND C.FlagPasoPedido=1 AND C.AnioCampana <= @AnioCampana
 group by C.PKebelista
-
---SELECT * FROM FSTAEBECAMC01
-
-
 
 --------------------------TABLA FINAL:
 
-IF OBJECT_ID('tempdb.dbo.##KR_MCC_DATOS2', 'U') IS NOT NULL
-  DROP TABLE ##KR_MCC_DATOS2;
+IF OBJECT_ID('tempdb.dbo.#KR_MCC_DATOS2', 'U') IS NOT NULL
+  DROP TABLE #KR_MCC_DATOS2;
 
 SELECT
 A.*,
-dbo.DiffANIOCampanas(@AnioCampana,H.AnioCampanaUltimoPedido)    as N_Camp_UlPed,
+dbo.DiffANIOCampanas(@AnioCampana,H.AnioCampanaUltimoPedido) as N_Camp_UlPed,
 dbo.DiffANIOCampanas(@AnioCampana,I.AnioCampanaUltimoPedidoWeb) as N_Camp_UlPedWeb,
 J.N_CAMP AS N_camp,
 B.C1_Constancia,
@@ -696,7 +820,7 @@ G.C17_Flagactiva,
 G.C18_Flagactiva
 INTO ##KR_MCC_DATOS2
 FROM 
-##KR_MCC_DATOS1 A
+#KR_MCC_DATOS1 A
 LEFT JOIN ##KR_CONSTANCIA1 B   ON A.PKEbelista=B.PKEbelista
 LEFT JOIN ##KR_COD_STATUS1 C   ON A.PKEbelista=C.PKEbelista
 LEFT JOIN ##FLAGIPUNICO1 D     ON A.PKEbelista=D.PKEbelista
@@ -733,6 +857,51 @@ EXEC sp_executesql @SQLString8;
 END
 
 GO
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ---INGRESANDO PARAMETROS
 /*
