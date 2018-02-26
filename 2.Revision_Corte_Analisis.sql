@@ -1,26 +1,37 @@
- -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
------------------------------------------------------------------------------ESTRUCTURA FINAL TABLA CONSULTORA-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---CLOUD
+--CREATE PROCEDURE [dbo].[KR_MATRIZ_CONS]
+--	@CodPais CHAR(2),
+--	@AnioCampana CHAR(6)
 
----BD
-use BD_ANALITICO
-GO
+--AS
 
+SET NOCOUNT ON;
+SET ANSI_WARNINGS OFF;
 
-CREATE PROCEDURE [dbo].[KR_MATRIZ_CONS]
-@CodPais CHAR(2),
-@AnioCampana CHAR(6)
+/*
+	SP: Estructura Final Tabla Consultora
+	Creado por: Karin Rodriguez 
+	Fecha Creacion: 31/07/2017
 
-AS
+	Modificacion por: Johnny Valenzuela 
+	Fecha Modificacion: 26/02/2018
+
+	/*
+	 Tiempo Inicial: 18 min Aprox
+	 Tiempo Final: 2:10 min aprox
+	*/
+	
+	EXEC KR_MATRIZ_CONS 'CO','201716'
+
+*/
+
 
 BEGIN
 
-declare @CodPais CHAR(2),
-		@AnioCampana VARCHAR(6)
+--declare @CodPais CHAR(2),
+--		@AnioCampana VARCHAR(6)
 
-set @CodPais = 'CO'
-set	@AnioCampana = '201709'
+--set @CodPais = 'CO'
+--set	@AnioCampana = '201709'
 
 
 declare @AnioCampanamenos1 CHAR(6),
@@ -90,20 +101,6 @@ INNER JOIN [DWH_ANALITICO].[dbo].[DWH_DGEOGRAFIACAMPANA] B ON C.PKTerritorio = B
 WHERE A.AnioCampanaIngreso<>'0' AND  A.AnioCampanaIngreso<>' ' AND A.AnioCampanaIngreso IS NOT NULL AND A.AnioCampanaPrimerPedido IS NOT NULL AND A.AnioCampanaIngreso<=@AnioCampana
 AND  A.CodPais=@CodPais
 
--------------Cruzando con Geografía para saber si es de Oficina
-
---IF OBJECT_ID('tempdb.dbo.##KR_MCC_DATOS1', 'U') IS NOT NULL
---  DROP TABLE ##KR_MCC_DATOS1;
-
---SELECT
---A.*,B.DESREGION,B.CODREGION,B.CODZONA,B.CODSECCION,
---CASE WHEN B.Desregion IN ('OFICINA','00 ADMINISTRATIVO','EMPLEADOS') THEN 1 ELSE 0 END AS FlagBelcorp,CASE WHEN B.Desregion IN ('99 FONO TIENDA','AREA ELIMINADA CON ESTADISTICA','<SIN DESCRIPCION>','SIN HOMOLOGAR','CASTIGADAS','JUBILADOS Y MAQUILLADORES','ATENCION PREFERENCIAL') THEN 1 ELSE 0 END AS Flaginusual
---INTO ##KR_MCC_DATOS1
---FROM
---##KR_MCC_DATOS A
---INNER JOIN [DWH_ANALITICO].[dbo].[DWH_DGEOGRAFIACAMPANA] B ON A.PKTerritorio = B.PKTerritorio AND A.AnioCampana = B.AnioCampana AND A.CodPais=B.CodPais
-
-
 ------------Comportamiento Rolling + IP unico zona
 
 IF OBJECT_ID('tempdb.dbo.#KR_MCC_COMP', 'U') IS NOT NULL DROP TABLE #KR_MCC_COMP;
@@ -122,19 +119,6 @@ INNER JOIN [DWH_ANALITICO].[dbo].[DWH_DCOMPORTAMIENTOROLLING] D on C.Codcomporta
 INNER JOIN [DWH_ANALITICO].[dbo].[DWH_DSTATUS] E on C.CodStatus =E.CodStatus AND E.CodPais = C.CodPais   
 WHERE C.AnioCampana BETWEEN @AnioCampanamenos17 AND @AnioCampana AND C.CodPais = @CodPais
 group by C.PKebelista,C.AnioCampana,C.Constancia,C.FlagActiva,C.FlagIpUnicoZona,C.FlagPasoPedido,D.DesNivelComportamiento,E.DesStatusCorp
-
-
-----------------------Ncampañas
-
---IF OBJECT_ID('tempdb.dbo.##KR_NCAMP', 'U') IS NOT NULL
---  DROP TABLE ##KR_NCAMP;
-
---SELECT 
---PKEbelista,count(distinct AnioCampana) as N_camp
---INTO ##KR_NCAMP
---FROM ##KR_MCC_COMP
---GROUP BY PKEbelista
---(63664 row(s) affected)
 
 
 ----------------------CONSTANCIA
@@ -684,7 +668,7 @@ IF OBJECT_ID('tempdb.dbo.#KR_MCC_ANT', 'U') IS NOT NULL DROP TABLE #KR_MCC_ANT;
 
 SELECT C.PKebelista,MAX(C.AnioCampana) AS AnioCampanaUltimoPedido
 into #KR_MCC_ANT
-from #KR_MCC_DATOS1 A
+from #KR_MCC_DATOS A
 INNER JOIN [DWH_ANALITICO].[dbo].[DWH_FSTAEBECAM] C ON A.PKEBELISTA = C.PKEbelista and C.CodPais= A.CodPais 
 WHERE C.AnioCampana <= @AnioCampana AND C.FlagPasoPedido=1 
 group by C.PKebelista
@@ -695,168 +679,170 @@ IF OBJECT_ID('tempdb.dbo.#KR_MCC_ANTW', 'U') IS NOT NULL DROP TABLE #KR_MCC_ANTW
 
 SELECT C.PKebelista,MAX(C.AnioCampana) AS AnioCampanaUltimoPedidoWeb
 into #KR_MCC_ANTW
-from #KR_MCC_DATOS1 A
+from #KR_MCC_DATOS A
 INNER JOIN [DWH_ANALITICO].[dbo].[DWH_FSTAEBECAM] C ON A.PKEBELISTA = C.PKEbelista  AND C.CodPais = A.CodPais 
 WHERE C.codigofacturainternet in ('WEB','WMX','APP','APM','APW') AND C.FlagPasoPedido=1 AND C.AnioCampana <= @AnioCampana
 group by C.PKebelista
 
+
+
+IF OBJECT_ID('tempdb.dbo.#KR_NCAMP', 'U') IS NOT NULL DROP TABLE #KR_NCAMP;
+
+SELECT PKEbelista,count(distinct AnioCampana) as N_camp
+INTO #KR_NCAMP
+FROM #KR_MCC_COMP
+GROUP BY PKEbelista
+
+
 --------------------------TABLA FINAL:
 
-IF OBJECT_ID('tempdb.dbo.#KR_MCC_DATOS2', 'U') IS NOT NULL
-  DROP TABLE #KR_MCC_DATOS2;
+IF OBJECT_ID('tempdb.dbo.#KR_MCC_Final', 'U') IS NOT NULL DROP TABLE #KR_MCC_Final;
 
 SELECT
-A.*,
-dbo.DiffANIOCampanas(@AnioCampana,H.AnioCampanaUltimoPedido) as N_Camp_UlPed,
-dbo.DiffANIOCampanas(@AnioCampana,I.AnioCampanaUltimoPedidoWeb) as N_Camp_UlPedWeb,
-J.N_CAMP AS N_camp,
-B.C1_Constancia,
-B.C2_Constancia,
-B.C3_Constancia,
-B.C4_Constancia,
-B.C5_Constancia,
-B.C6_Constancia,
-B.C7_Constancia,
-B.C8_Constancia,
-B.C9_Constancia,
-B.C10_Constancia,
-B.C11_Constancia,
-B.C12_Constancia,
-B.C13_Constancia,
-B.C14_Constancia,
-B.C15_Constancia,
-B.C16_Constancia,
-B.C17_Constancia,
-B.C18_Constancia,
-C.C1_Cod_Status,
-C.C2_Cod_Status,
-C.C3_Cod_Status,
-C.C4_Cod_Status,
-C.C5_Cod_Status,
-C.C6_Cod_Status,
-C.C7_Cod_Status,
-C.C8_Cod_Status,
-C.C9_Cod_Status,
-C.C10_Cod_Status,
-C.C11_Cod_Status,
-C.C12_Cod_Status,
-C.C13_Cod_Status,
-C.C14_Cod_Status,
-C.C15_Cod_Status,
-C.C16_Cod_Status,
-C.C17_Cod_Status,
-C.C18_Cod_Status,
-D.C1_FlagIpUnico,
-D.C2_FlagIpUnico,
-D.C3_FlagIpUnico,
-D.C4_FlagIpUnico,
-D.C5_FlagIpUnico,
-D.C6_FlagIpUnico,
-D.C7_FlagIpUnico,
-D.C8_FlagIpUnico,
-D.C9_FlagIpUnico,
-D.C10_FlagIpUnico,
-D.C11_FlagIpUnico,
-D.C12_FlagIpUnico,
-D.C13_FlagIpUnico,
-D.C14_FlagIpUnico,
-D.C15_FlagIpUnico,
-D.C16_FlagIpUnico,
-D.C17_FlagIpUnico,
-D.C18_FlagIpUnico,
-E.C1_Comp_Rolling,
-E.C2_Comp_Rolling,
-E.C3_Comp_Rolling,
-E.C4_Comp_Rolling,
-E.C5_Comp_Rolling,
-E.C6_Comp_Rolling,
-E.C7_Comp_Rolling,
-E.C8_Comp_Rolling,
-E.C9_Comp_Rolling,
-E.C10_Comp_Rolling,
-E.C11_Comp_Rolling,
-E.C12_Comp_Rolling,
-E.C13_Comp_Rolling,
-E.C14_Comp_Rolling,
-E.C15_Comp_Rolling,
-E.C16_Comp_Rolling,
-E.C17_Comp_Rolling,
-E.C18_Comp_Rolling,
-F.C1_FlagPasoPedido,
-F.C2_FlagPasoPedido,
-F.C3_FlagPasoPedido,
-F.C4_FlagPasoPedido,
-F.C5_FlagPasoPedido,
-F.C6_FlagPasoPedido,
-F.C7_FlagPasoPedido,
-F.C8_FlagPasoPedido,
-F.C9_FlagPasoPedido,
-F.C10_FlagPasoPedido,
-F.C11_FlagPasoPedido,
-F.C12_FlagPasoPedido,
-F.C13_FlagPasoPedido,
-F.C14_FlagPasoPedido,
-F.C15_FlagPasoPedido,
-F.C16_FlagPasoPedido,
-F.C17_FlagPasoPedido,
-F.C18_FlagPasoPedido,
-G.C1_Flagactiva,
-G.C2_Flagactiva,
-G.C3_Flagactiva,
-G.C4_Flagactiva,
-G.C5_Flagactiva,
-G.C6_Flagactiva,
-G.C7_Flagactiva,
-G.C8_Flagactiva,
-G.C9_Flagactiva,
-G.C10_Flagactiva,
-G.C11_Flagactiva,
-G.C12_Flagactiva,
-G.C13_Flagactiva,
-G.C14_Flagactiva,
-G.C15_Flagactiva,
-G.C16_Flagactiva,
-G.C17_Flagactiva,
-G.C18_Flagactiva
-INTO ##KR_MCC_DATOS2
-FROM 
-#KR_MCC_DATOS1 A
-LEFT JOIN ##KR_CONSTANCIA1 B   ON A.PKEbelista=B.PKEbelista
-LEFT JOIN ##KR_COD_STATUS1 C   ON A.PKEbelista=C.PKEbelista
-LEFT JOIN ##FLAGIPUNICO1 D     ON A.PKEbelista=D.PKEbelista
-LEFT JOIN ##KR_COMP_ROLLING1 E ON A.PKEbelista=E.PKEbelista
-LEFT JOIN ##FLAGPASOPEDIDO1  F ON A.PKEbelista=F.PKEbelista
-LEFT JOIN ##FLAGACTIVA1 G      ON A.PKEbelista=G.PKEbelista
-LEFT JOIN ##KR_MCC_ANT  H      ON A.PKEbelista=H.PKEbelista
-LEFT JOIN ##KR_MCC_ANTW  I     ON A.PKEbelista=I.PKEbelista
-LEFT JOIN ##KR_NCAMP  J        ON A.PKEbelista=J.PKEbelista;
+	A.*,
+	dbo.DiffANIOCampanas(@AnioCampana,H.AnioCampanaUltimoPedido) as N_Camp_UlPed,
+	dbo.DiffANIOCampanas(@AnioCampana,I.AnioCampanaUltimoPedidoWeb) as N_Camp_UlPedWeb,
+	J.N_CAMP AS N_camp,
+	B.C1_Constancia,
+	B.C2_Constancia,
+	B.C3_Constancia,
+	B.C4_Constancia,
+	B.C5_Constancia,
+	B.C6_Constancia,
+	B.C7_Constancia,
+	B.C8_Constancia,
+	B.C9_Constancia,
+	B.C10_Constancia,
+	B.C11_Constancia,
+	B.C12_Constancia,
+	B.C13_Constancia,
+	B.C14_Constancia,
+	B.C15_Constancia,
+	B.C16_Constancia,
+	B.C17_Constancia,
+	B.C18_Constancia,
+	C.C1_Cod_Status,
+	C.C2_Cod_Status,
+	C.C3_Cod_Status,
+	C.C4_Cod_Status,
+	C.C5_Cod_Status,
+	C.C6_Cod_Status,
+	C.C7_Cod_Status,
+	C.C8_Cod_Status,
+	C.C9_Cod_Status,
+	C.C10_Cod_Status,
+	C.C11_Cod_Status,
+	C.C12_Cod_Status,
+	C.C13_Cod_Status,
+	C.C14_Cod_Status,
+	C.C15_Cod_Status,
+	C.C16_Cod_Status,
+	C.C17_Cod_Status,
+	C.C18_Cod_Status,
+	D.C1_FlagIpUnico,
+	D.C2_FlagIpUnico,
+	D.C3_FlagIpUnico,
+	D.C4_FlagIpUnico,
+	D.C5_FlagIpUnico,
+	D.C6_FlagIpUnico,
+	D.C7_FlagIpUnico,
+	D.C8_FlagIpUnico,
+	D.C9_FlagIpUnico,
+	D.C10_FlagIpUnico,
+	D.C11_FlagIpUnico,
+	D.C12_FlagIpUnico,
+	D.C13_FlagIpUnico,
+	D.C14_FlagIpUnico,
+	D.C15_FlagIpUnico,
+	D.C16_FlagIpUnico,
+	D.C17_FlagIpUnico,
+	D.C18_FlagIpUnico,
+	E.C1_Comp_Rolling,
+	E.C2_Comp_Rolling,
+	E.C3_Comp_Rolling,
+	E.C4_Comp_Rolling,
+	E.C5_Comp_Rolling,
+	E.C6_Comp_Rolling,
+	E.C7_Comp_Rolling,
+	E.C8_Comp_Rolling,
+	E.C9_Comp_Rolling,
+	E.C10_Comp_Rolling,
+	E.C11_Comp_Rolling,
+	E.C12_Comp_Rolling,
+	E.C13_Comp_Rolling,
+	E.C14_Comp_Rolling,
+	E.C15_Comp_Rolling,
+	E.C16_Comp_Rolling,
+	E.C17_Comp_Rolling,
+	E.C18_Comp_Rolling,
+	F.C1_FlagPasoPedido,
+	F.C2_FlagPasoPedido,
+	F.C3_FlagPasoPedido,
+	F.C4_FlagPasoPedido,
+	F.C5_FlagPasoPedido,
+	F.C6_FlagPasoPedido,
+	F.C7_FlagPasoPedido,
+	F.C8_FlagPasoPedido,
+	F.C9_FlagPasoPedido,
+	F.C10_FlagPasoPedido,
+	F.C11_FlagPasoPedido,
+	F.C12_FlagPasoPedido,
+	F.C13_FlagPasoPedido,
+	F.C14_FlagPasoPedido,
+	F.C15_FlagPasoPedido,
+	F.C16_FlagPasoPedido,
+	F.C17_FlagPasoPedido,
+	F.C18_FlagPasoPedido,
+	G.C1_Flagactiva,
+	G.C2_Flagactiva,
+	G.C3_Flagactiva,
+	G.C4_Flagactiva,
+	G.C5_Flagactiva,
+	G.C6_Flagactiva,
+	G.C7_Flagactiva,
+	G.C8_Flagactiva,
+	G.C9_Flagactiva,
+	G.C10_Flagactiva,
+	G.C11_Flagactiva,
+	G.C12_Flagactiva,
+	G.C13_Flagactiva,
+	G.C14_Flagactiva,
+	G.C15_Flagactiva,
+	G.C16_Flagactiva,
+	G.C17_Flagactiva,
+	G.C18_Flagactiva
+INTO #KR_MCC_Final
+FROM #KR_MCC_DATOS A
+LEFT JOIN #KR_CONSTANCIA B   ON A.PKEbelista=B.PKEbelista
+LEFT JOIN #KR_COD_STATUS C   ON A.PKEbelista=C.PKEbelista
+LEFT JOIN #FLAGIPUNICO D     ON A.PKEbelista=D.PKEbelista
+LEFT JOIN #KR_COMP_ROLLING E ON A.PKEbelista=E.PKEbelista
+LEFT JOIN #FLAGPASOPEDIDO  F ON A.PKEbelista=F.PKEbelista
+LEFT JOIN #FLAGACTIVA G      ON A.PKEbelista=G.PKEbelista
+LEFT JOIN #KR_MCC_ANT  H      ON A.PKEbelista=H.PKEbelista
+LEFT JOIN #KR_MCC_ANTW  I     ON A.PKEbelista=I.PKEbelista
+LEFT JOIN #KR_NCAMP  J        ON A.PKEbelista=J.PKEbelista;
 
--- SELECT * FROM ##KR_MCC_DATOS2
----SELECT * FROM ##KR_NCAMP
--- SELECT COUNT(1),COUNT(DISTINCT PKEbelista) FROM ##KR_MCC_DATOS2
--- 63,357	63,357
+SELECT * FROM #KR_MCC_Final
+ORDER BY PkEbelista
 
-DECLARE @SQLString7 NVARCHAR(2000);
+--DECLARE @SQLString7 NVARCHAR(2000);
 
-SET @SQLString7 = 
-N'
-IF OBJECT_ID(''tempdb.dbo.##KR_MCC_DATOS_'+@AnioCampana+' '', ''U'') IS NOT NULL
-DROP TABLE ##KR_MCC_DATOS_'+@AnioCampana;
+--SET @SQLString7 = 
+--N'IF OBJECT_ID(''tempdb.dbo.##KR_MCC_DATOS_'+@AnioCampana+' '', ''U'') IS NOT NULL
+--DROP TABLE ##KR_MCC_DATOS_'+@AnioCampana;
 
-EXEC sp_executesql @SQLString7;
+--EXEC sp_executesql @SQLString7;
 
+--DECLARE @SQLString8 NVARCHAR(2000);
 
-DECLARE @SQLString8 NVARCHAR(2000);
+--SET @SQLString8 = 
+--N' SELECT * INTO ##KR_MCC_DATOS_'+@AnioCampana+' FROM ##KR_MCC_DATOS2'
 
-SET @SQLString8 = 
-N'
-SELECT * INTO ##KR_MCC_DATOS_'+@AnioCampana+' FROM ##KR_MCC_DATOS2'
-
-EXEC sp_executesql @SQLString8;
+--EXEC sp_executesql @SQLString8;
 
 END
 
-GO
 
 
 
@@ -897,9 +883,7 @@ GO
 
 
 
-
-
-
+/*
 
 
 
@@ -1285,3 +1269,4 @@ DROP TABLE ##KR_MCC_DATOS, ##KR_MCC_DATOS1,##KR_MCC_COMP,##KR_NCAMP,##KR_CONSTAN
 
 --select * from KR_MCC_DATOST1_E2
 
+*/

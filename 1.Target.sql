@@ -18,6 +18,11 @@
 		@AnioCampanamenos1 --> Cx-1
 		@AnioCampanamenos2 --> Cx-2 Campaña cierre de Data
 
+	/*
+		Tiempo Inicial : 40 seg Aprox
+		Tiempo Final: 6 seg Aprox
+	*/
+
 	EXEC KR_MATRIZ_TARG 'CO','201716'
 
 */
@@ -99,9 +104,3 @@ INNER JOIN TableMenos2 B ON A.PkEbelista = B.Pkebelista
 INNER JOIN TableMenos1 C ON A.Pkebelista = C.PkEbelista 
 INNER JOIN TableTemp D ON A.PkEbelista = D.PkEbelista
 
-/*
-	Tiempo Inicial : 40 seg Aprox
-	Tiempo Final: 6 seg Aprox
-
-
-*/
