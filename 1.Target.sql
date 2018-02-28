@@ -1,9 +1,9 @@
---CREATE PROCEDURE KR_MATRIZ_TARG
---@CodPais CHAR(2),
---@AnioCampana CHAR(6)
+ALTER PROCEDURE KR_MATRIZ_TARG_V1 
+@CodPais CHAR(2),
+@AnioCampana CHAR(6)
 
---AS
---BEGIN
+AS
+BEGIN
 
 /*
 	SP: Definicion de Target
@@ -27,10 +27,11 @@
 
 */
 
-declare @AnioCampana  char(6),
- 		@CodPais CHAR(2)
-set @CodPais = 'CO'
-set @AnioCampana  = '201709'
+--declare @AnioCampana  char(6),
+-- 		@CodPais CHAR(2)
+--set @CodPais = 'CO'
+--set @AnioCampana  = '201709'
+--SET NOCOUNT ON;
 
 declare @AnioCampanamenos1 CHAR(6),
 	    @AnioCampanamenos2 CHAR(6)
@@ -103,4 +104,39 @@ FROM #KR_MCC_TARGET1 A
 INNER JOIN TableMenos2 B ON A.PkEbelista = B.Pkebelista 
 INNER JOIN TableMenos1 C ON A.Pkebelista = C.PkEbelista 
 INNER JOIN TableTemp D ON A.PkEbelista = D.PkEbelista
+
+
+IF OBJECT_ID('tempdb.dbo.#KR_MCC_TARGET_T1', 'U') IS NOT NULL DROP TABLE #KR_MCC_TARGET_T1;
+
+SELECT *
+INTO #KR_MCC_TARGET_T1
+FROM 
+(
+	SELECT A.*,CASE WHEN Cx2_PasoPedido=0 THEN 1 ELSE 0 END AS [TARGET] 
+	FROM #Final A
+	WHERE Cx_Activa=1 AND FlagBelcorp=0 AND FlagInusual=0 
+)KR
+
+
+IF OBJECT_ID('tempdb.dbo.#KR_TARGET_FUGA', 'U') IS NOT NULL
+  DROP TABLE #KR_TARGET_FUGA;
+
+SELECT AnioCampanaT,AnioCampanaUC,CodPais,[Target],PKebelista,
+		case when Cx_Comp_rolling = 'Nuevas' then 'Nuevas' 
+				when Cx_Comp_rolling in  ('Brilla','Tops','Constantes 1','Constantes 2','Constantes 3','Inconstantes')  
+				then 'Establecidas' end as Tipo,
+		Cx_Status,Cx1_Status,Cx2_Status,
+		Cx_Activa,Cx1_Activa,Cx2_Activa,
+		Cx_Comp_Rolling,Cx1_Comp_Rolling,Cx2_Comp_Rolling,
+		Cx_PasoPedido,Cx1_PasoPedido,Cx2_PasoPedido
+INTO #KR_TARGET_FUGA
+FROM #KR_MCC_TARGET_T1
+
+
+DELETE FROM #KR_TARGET_FUGA WHERE Tipo IS NULL /*SON LAS QUE NO TIENEN SEGMENTO*/
+
+/*En un inicio estaba el pkterritorio en el #KR_TARGET_FUGA, se quioto ya que solo se usa para cruzar*/
+SELECT * FROM #KR_TARGET_FUGA
+
+END
 
