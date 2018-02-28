@@ -810,7 +810,8 @@ SELECT
 	G.C15_Flagactiva,
 	G.C16_Flagactiva,
 	G.C17_Flagactiva,
-	G.C18_Flagactiva
+	G.C18_Flagactiva,
+	CAST(NULL AS INT) as Antig_act
 INTO #KR_MCC_Final
 FROM #KR_MCC_DATOS A
 LEFT JOIN #KR_CONSTANCIA B   ON A.PKEbelista=B.PKEbelista
@@ -826,6 +827,9 @@ LEFT JOIN #KR_NCAMP  J        ON A.PKEbelista=J.PKEbelista;
 SELECT * FROM #KR_MCC_Final
 ORDER BY PkEbelista
 
+END
+
+/*
 --DECLARE @SQLString7 NVARCHAR(2000);
 
 --SET @SQLString7 = 
@@ -840,51 +844,6 @@ ORDER BY PkEbelista
 --N' SELECT * INTO ##KR_MCC_DATOS_'+@AnioCampana+' FROM ##KR_MCC_DATOS2'
 
 --EXEC sp_executesql @SQLString8;
-
-END
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-
 
 
 ---INGRESANDO PARAMETROS
@@ -927,11 +886,9 @@ EXEC dbo.KR_MATRIZ_CONS 'CO','201714'
 
 -------------------------------------------------------
 
-drop table #anti3
+IF OBJECT_ID('tempdb..#anti3)' drop table #anti3
 
-select A.CodPais
-,A.PKEbelista
-,count(*) antiguedad
+select A.CodPais,A.PKEbelista,count(*) antiguedad
 into #anti3
 from [DWH_ANALITICO].[dbo].[DWH_FSTAEBECAM] A
 inner join kr_anti_14 B on 
@@ -945,6 +902,8 @@ group by A.CodPais,A.PKEbelista
 alter table ##KR_MCC_DATOS_201714
 --drop column Antig_act
 add Antig_act int
+
+
 go
 update ##KR_MCC_DATOS_201714
 set Antig_act=b.antiguedad
