@@ -15,17 +15,9 @@ declare
 	 @AnioCampanamenos3 CHAR(6),
 	 @AnioCampanamenos4 CHAR(6),
 	 @AnioCampanamenos5 CHAR(6),
- 	 @AnioCampanamenos6 CHAR(6),
-	 @AnioCampanamenos7 CHAR(6),
 	 @AnioCampanamenos8 CHAR(6),
-	 @AnioCampanamenos9 CHAR(6),
-	 @AnioCampanamenos10 CHAR(6),	 
 	 @AnioCampanamenos11 CHAR(6),
-	 @AnioCampanamenos12 CHAR(6),
-	 @AnioCampanamenos13 CHAR(6),
 	 @AnioCampanamenos14 CHAR(6),
-	 @AnioCampanamenos15 CHAR(6),
-	 @AnioCampanamenos16 CHAR(6),
 	 @AnioCampanamenos17 CHAR(6),
 	 @CodPais CHAR(2),
 	 @AnioCampana CHAR(6)
@@ -37,150 +29,12 @@ set @AnioCampanamenos2 = dbo.CalculaAnioCampana(@AnioCampana, -2)
 set @AnioCampanamenos3 = dbo.CalculaAnioCampana(@AnioCampana, -3)
 set @AnioCampanamenos4 = dbo.CalculaAnioCampana(@AnioCampana, -4)
 set @AnioCampanamenos5 = dbo.CalculaAnioCampana(@AnioCampana, -5)
-set @AnioCampanamenos6 = dbo.CalculaAnioCampana(@AnioCampana, -6)
-set @AnioCampanamenos7 = dbo.CalculaAnioCampana(@AnioCampana, -7)
 set @AnioCampanamenos8 = dbo.CalculaAnioCampana(@AnioCampana, -8)
-set @AnioCampanamenos9 = dbo.CalculaAnioCampana(@AnioCampana, -9)
-set @AnioCampanamenos10 = dbo.CalculaAnioCampana(@AnioCampana, -10)
 set @AnioCampanamenos11 = dbo.CalculaAnioCampana(@AnioCampana, -11)
-set @AnioCampanamenos12 = dbo.CalculaAnioCampana(@AnioCampana, -12)
-set @AnioCampanamenos13 = dbo.CalculaAnioCampana(@AnioCampana, -13)
 set @AnioCampanamenos14 = dbo.CalculaAnioCampana(@AnioCampana, -14)
-set @AnioCampanamenos15 = dbo.CalculaAnioCampana(@AnioCampana, -15)
-set @AnioCampanamenos16 = dbo.CalculaAnioCampana(@AnioCampana, -16)
 set @AnioCampanamenos17 = dbo.CalculaAnioCampana(@AnioCampana, -17)
 
 ----------------Unidades y Facturación
-
-
---IF OBJECT_ID('tempdb.dbo.##KR_VEN_CAMP_AGR', 'U') IS NOT NULL
---  DROP TABLE ##KR_VEN_CAMP_AGR;
-  
-
---SELECT
---PKEbelista,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampana  THEN  RealUUVendidas  else 0 end))/1 AS UC_RealUUVendidas ,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos1  THEN  RealUUVendidas  else 0 end))/2 AS U2C_RealUUVendidas ,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos2  THEN  RealUUVendidas  else 0 end))/3 AS U3C_RealUUVendidas ,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos3  THEN  RealUUVendidas  else 0 end))/4 AS U4C_RealUUVendidas ,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos4  THEN  RealUUVendidas  else 0 end))/5 AS U5C_RealUUVendidas ,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos5  THEN  RealUUVendidas  else 0 end))/6 AS U6C_RealUUVendidas ,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos8  THEN  RealUUVendidas  else 0 end))/9 AS U9C_RealUUVendidas ,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos11  THEN  RealUUVendidas  else 0 end))/12 AS U12C_RealUUVendidas ,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos14  THEN  RealUUVendidas  else 0 end))/15 AS U15C_RealUUVendidas ,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos17  THEN  RealUUVendidas  else 0 end))/18 AS U18C_RealUUVendidas ,
-
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampana  THEN  RealUUFaltantes else 0 end))/1 AS UC_RealUUFaltantes,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos1  THEN  RealUUFaltantes else 0 end))/2 AS U2C_RealUUFaltantes,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos2  THEN  RealUUFaltantes else 0 end))/3 AS U3C_RealUUFaltantes,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos3  THEN  RealUUFaltantes else 0 end))/4 AS U4C_RealUUFaltantes,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos4  THEN  RealUUFaltantes else 0 end))/5 AS U5C_RealUUFaltantes,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos5  THEN  RealUUFaltantes else 0 end))/6 AS U6C_RealUUFaltantes,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos8  THEN  RealUUFaltantes else 0 end))/9 AS U9C_RealUUFaltantes,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos11  THEN  RealUUFaltantes else 0 end))/12 AS U12C_RealUUFaltantes,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos14  THEN  RealUUFaltantes else 0 end))/15 AS U15C_RealUUFaltantes,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos17  THEN  RealUUFaltantes else 0 end))/18 AS U18C_RealUUFaltantes,
-
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampana  THEN  RealUUDevueltas else 0 end))/1 AS UC_RealUUDevueltas,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos1  THEN  RealUUDevueltas else 0 end))/2 AS U2C_RealUUDevueltas,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos2  THEN  RealUUDevueltas else 0 end))/3 AS U3C_RealUUDevueltas,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos3  THEN  RealUUDevueltas else 0 end))/4 AS U4C_RealUUDevueltas,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos4  THEN  RealUUDevueltas else 0 end))/5 AS U5C_RealUUDevueltas,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos5  THEN  RealUUDevueltas else 0 end))/6 AS U6C_RealUUDevueltas,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos8  THEN  RealUUDevueltas else 0 end))/9 AS U9C_RealUUDevueltas,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos11  THEN  RealUUDevueltas else 0 end))/12 AS U12C_RealUUDevueltas,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos14  THEN  RealUUDevueltas else 0 end))/15 AS U15C_RealUUDevueltas,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos17  THEN  RealUUDevueltas else 0 end))/18 AS U18C_RealUUDevueltas,
-
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampana  THEN  RealUUAnuladas else 0 end))/1 AS UC_RealUUAnuladas,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos1  THEN  RealUUAnuladas else 0 end))/2 AS U2C_RealUUAnuladas,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos2  THEN  RealUUAnuladas else 0 end))/3 AS U3C_RealUUAnuladas,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos3  THEN  RealUUAnuladas else 0 end))/4 AS U4C_RealUUAnuladas,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos4  THEN  RealUUAnuladas else 0 end))/5 AS U5C_RealUUAnuladas,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos5  THEN  RealUUAnuladas else 0 end))/6 AS U6C_RealUUAnuladas,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos8  THEN  RealUUAnuladas else 0 end))/9 AS U9C_RealUUAnuladas,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos11  THEN  RealUUAnuladas else 0 end))/12 AS U12C_RealUUAnuladas,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos14  THEN  RealUUAnuladas else 0 end))/15 AS U15C_RealUUAnuladas,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos17  THEN  RealUUAnuladas else 0 end))/18 AS U18C_RealUUAnuladas,
-
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampana  THEN  RealVtaMNNeto else 0 end))/1 AS UC_RealVtaMNNeto,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos1  THEN  RealVtaMNNeto else 0 end))/2 AS U2C_RealVtaMNNeto,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos2  THEN  RealVtaMNNeto else 0 end))/3 AS U3C_RealVtaMNNeto,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos3  THEN  RealVtaMNNeto else 0 end))/4 AS U4C_RealVtaMNNeto,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos4  THEN  RealVtaMNNeto else 0 end))/5 AS U5C_RealVtaMNNeto,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos5  THEN  RealVtaMNNeto else 0 end))/6 AS U6C_RealVtaMNNeto,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos8  THEN  RealVtaMNNeto else 0 end))/9 AS U9C_RealVtaMNNeto,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos11  THEN  RealVtaMNNeto else 0 end))/12 AS U12C_RealVtaMNNeto,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos14  THEN  RealVtaMNNeto else 0 end))/15 AS U15C_RealVtaMNNeto,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos17  THEN  RealVtaMNNeto else 0 end))/18 AS U18C_RealVtaMNNeto,
-
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampana  THEN  OportunidadAhorroMN  else 0 end))/1 AS UC_OportunidadAhorroMN ,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos1  THEN  OportunidadAhorroMN  else 0 end))/2 AS U2C_OportunidadAhorroMN ,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos2  THEN  OportunidadAhorroMN  else 0 end))/3 AS U3C_OportunidadAhorroMN ,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos3  THEN  OportunidadAhorroMN  else 0 end))/4 AS U4C_OportunidadAhorroMN ,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos4  THEN  OportunidadAhorroMN  else 0 end))/5 AS U5C_OportunidadAhorroMN ,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos5  THEN  OportunidadAhorroMN  else 0 end))/6 AS U6C_OportunidadAhorroMN ,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos8  THEN  OportunidadAhorroMN  else 0 end))/9 AS U9C_OportunidadAhorroMN ,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos11  THEN  OportunidadAhorroMN  else 0 end))/12 AS U12C_OportunidadAhorroMN ,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos14  THEN  OportunidadAhorroMN  else 0 end))/15 AS U15C_OportunidadAhorroMN ,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos17  THEN  OportunidadAhorroMN  else 0 end))/18 AS U18C_OportunidadAhorroMN,
-
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos1  AND A.ANIOCAMPANA<@AnioCampana  THEN  RealUUVendidas  else 0 end))/1 AS U2C_RealUUVendidas_SUC ,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos2  AND A.ANIOCAMPANA<@AnioCampana  THEN  RealUUVendidas  else 0 end))/2 AS U3C_RealUUVendidas_SUC  ,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos3  AND A.ANIOCAMPANA<@AnioCampana  THEN  RealUUVendidas  else 0 end))/3 AS U4C_RealUUVendidas_SUC  ,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos4  AND A.ANIOCAMPANA<@AnioCampana  THEN  RealUUVendidas  else 0 end))/4 AS U5C_RealUUVendidas_SUC  ,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos5  AND A.ANIOCAMPANA<@AnioCampana  THEN  RealUUVendidas  else 0 end))/5 AS U6C_RealUUVendidas_SUC  ,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos8  AND A.ANIOCAMPANA<@AnioCampana  THEN  RealUUVendidas  else 0 end))/8 AS U9C_RealUUVendidas_SUC  ,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos11 AND A.ANIOCAMPANA<@AnioCampana  THEN  RealUUVendidas  else 0 end))/11 AS U12C_RealUUVendidas_SUC  ,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos14 AND A.ANIOCAMPANA<@AnioCampana  THEN  RealUUVendidas  else 0 end))/14 AS U15C_RealUUVendidas_SUC  ,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos17 AND A.ANIOCAMPANA<@AnioCampana  THEN  RealUUVendidas  else 0 end))/17 AS U18C_RealUUVendidas_SUC  ,
-
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos5  AND A.ANIOCAMPANA<@AnioCampanamenos2  THEN  RealUUVendidas  else 0 end))/3 AS U3C_RealUUVendidas_II  ,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos8  AND A.ANIOCAMPANA<@AnioCampanamenos2   THEN  RealUUVendidas  else 0 end))/6 AS U3C_RealUUVendidas_SUC_III  ,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos11 AND A.ANIOCAMPANA<@AnioCampanamenos2   THEN  RealUUVendidas  else 0 end))/9 AS U6C_RealUUVendidas_SUCIV  ,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos14 AND A.ANIOCAMPANA<@AnioCampanamenos2  THEN  RealUUVendidas  else 0 end))/12 AS U9C_RealUUVendidas_V  ,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos17 AND A.ANIOCAMPANA<@AnioCampanamenos2  THEN  RealUUVendidas  else 0 end))/15 AS U12C_RealUUVendidas_VI,
-
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos1  AND A.ANIOCAMPANA<@AnioCampana  THEN  OportunidadAhorroMN  else 0 end))/1 AS U2C_OportunidadAhorroMN_SUC ,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos2  AND A.ANIOCAMPANA<@AnioCampana  THEN  OportunidadAhorroMN  else 0 end))/2 AS U3C_OportunidadAhorroMN_SUC  ,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos3  AND A.ANIOCAMPANA<@AnioCampana  THEN  OportunidadAhorroMN  else 0 end))/3 AS U4C_OportunidadAhorroMN_SUC  ,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos4  AND A.ANIOCAMPANA<@AnioCampana  THEN  OportunidadAhorroMN  else 0 end))/4 AS U5C_OportunidadAhorroMN_SUC  ,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos5  AND A.ANIOCAMPANA<@AnioCampana  THEN  OportunidadAhorroMN  else 0 end))/5 AS U6C_OportunidadAhorroMN_SUC  ,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos8  AND A.ANIOCAMPANA<@AnioCampana  THEN  OportunidadAhorroMN  else 0 end))/8 AS U9C_OportunidadAhorroMN_SUC  ,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos11 AND A.ANIOCAMPANA<@AnioCampana  THEN  OportunidadAhorroMN  else 0 end))/11 AS U12C_OportunidadAhorroMN_SUC  ,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos14 AND A.ANIOCAMPANA<@AnioCampana  THEN  OportunidadAhorroMN  else 0 end))/14 AS U15C_OportunidadAhorroMN_SUC  ,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos17 AND A.ANIOCAMPANA<@AnioCampana  THEN  OportunidadAhorroMN  else 0 end))/17 AS U18C_OportunidadAhorroMN_SUC  ,
-
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos5  AND A.ANIOCAMPANA<@AnioCampanamenos2  THEN  OportunidadAhorroMN  else 0 end))/3 AS U3C_OportunidadAhorroMN_II  ,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos8  AND A.ANIOCAMPANA<@AnioCampanamenos2   THEN  OportunidadAhorroMN  else 0 end))/6 AS U3C_OportunidadAhorroMN_SUC_III  ,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos11  AND A.ANIOCAMPANA<@AnioCampanamenos2   THEN  OportunidadAhorroMN  else 0 end))/9 AS U6C_OportunidadAhorroMN_SUCIV  ,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos14  AND A.ANIOCAMPANA<@AnioCampanamenos2  THEN  OportunidadAhorroMN  else 0 end))/12 AS U9C_OportunidadAhorroMN_V  ,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos17 AND A.ANIOCAMPANA<@AnioCampanamenos2  THEN  OportunidadAhorroMN  else 0 end))/15 AS U12C_OportunidadAhorroMN_VI,
-
-
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos1  AND A.ANIOCAMPANA<@AnioCampana  THEN  RealVtaMNNeto  else 0 end))/1 AS U2C_RealVtaMNNeto_SUC ,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos2  AND A.ANIOCAMPANA<@AnioCampana  THEN  RealVtaMNNeto  else 0 end))/2 AS U3C_RealVtaMNNeto_SUC  ,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos3  AND A.ANIOCAMPANA<@AnioCampana  THEN  RealVtaMNNeto  else 0 end))/3 AS U4C_RealVtaMNNeto_SUC  ,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos4  AND A.ANIOCAMPANA<@AnioCampana  THEN  RealVtaMNNeto  else 0 end))/4 AS U5C_RealVtaMNNeto_SUC  ,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos5  AND A.ANIOCAMPANA<@AnioCampana  THEN  RealVtaMNNeto  else 0 end))/5 AS U6C_RealVtaMNNeto_SUC  ,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos8  AND A.ANIOCAMPANA<@AnioCampana  THEN  RealVtaMNNeto  else 0 end))/8 AS U9C_RealVtaMNNeto_SUC  ,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos11 AND A.ANIOCAMPANA<@AnioCampana  THEN  RealVtaMNNeto  else 0 end))/11 AS U12C_RealVtaMNNeto_SUC  ,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos14 AND A.ANIOCAMPANA<@AnioCampana  THEN  RealVtaMNNeto  else 0 end))/14 AS U15C_RealVtaMNNeto_SUC  ,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos17 AND A.ANIOCAMPANA<@AnioCampana  THEN  RealVtaMNNeto  else 0 end))/17 AS U18C_RealVtaMNNeto_SUC  ,
-
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos5  AND A.ANIOCAMPANA<@AnioCampanamenos2  THEN  RealVtaMNNeto  else 0 end))/3 AS U3C_RealVtaMNNeto_II  ,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos8  AND A.ANIOCAMPANA<@AnioCampanamenos2   THEN  RealVtaMNNeto  else 0 end))/6 AS U3C_RealVtaMNNeto_SUC_III  ,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos11  AND A.ANIOCAMPANA<@AnioCampanamenos2   THEN  RealVtaMNNeto  else 0 end))/9 AS U6C_RealVtaMNNeto_SUCIV  ,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos14  AND A.ANIOCAMPANA<@AnioCampanamenos2  THEN  RealVtaMNNeto  else 0 end))/12 AS U9C_RealVtaMNNeto_V  ,
---1.0*(SUM(CASE WHEN A.ANIOCAMPANA>=@AnioCampanamenos17 AND A.ANIOCAMPANA<@AnioCampanamenos2  THEN  RealVtaMNNeto  else 0 end))/15 AS U12C_RealVtaMNNeto_VI
-
---INTO ##KR_VEN_CAMP_AGR
---FROM [DWH_ANALITICO].[dbo].[DWH_FVTAPROEBECAM]  A
---INNER JOIN  [DWH_ANALITICO].[dbo].[DWH_DTIPOOFERTA] B  ON A.PKTipoOferta=B.PKTipoOferta AND B.CODPAIS=@CodPais 
---WHERE A.ANIOCAMPANA>=@AnioCampanamenos17 AND A.ANIOCAMPANA<=@AnioCampana  AND B.codtipoprofit='01' and A.RealVtaMNNeto>0 AND A.CODPAIS=@CodPais 
---and a.aniocampana=a.aniocampanaref
---GROUP BY PKEbelista
---;
 
 IF OBJECT_ID('tempdb..#TMP_FVTAPROEBECAM') IS NOT NULL DROP TABLE #TMP_FVTAPROEBECAM
 
@@ -587,6 +441,7 @@ SELECT  @AnioCampana as AnioCampana,
 		ISNULL(C.U12C_OportunidadAhorroMN,0)		AS U12C_OportunidadAhorroMN,
 		ISNULL(B.U15C_OportunidadAhorroMN,0)		AS U15C_OportunidadAhorroMN,
 		ISNULL(A.U18C_OportunidadAhorroMN,0)		AS U18C_OportunidadAhorroMN,
+		ISNULL(I.U2C_PRO_RealVtaMNNeto,0) AS U2C_PRO_RealVtaMNNeto, 
 		ISNULL(I.U2C_PRO_OportunidadAhorroMN,0)		AS U2C_PRO_OportunidadAhorroMN,
 		ISNULL(I.U2C_DESV_RealUUVendidas,0)	AS U2C_DESV_RealUUVendidas,
 		ISNULL(I.U2C_DESV_RealUUDevueltas,0)		AS U2C_DESV_RealUUDevueltas,
@@ -602,6 +457,9 @@ SELECT  @AnioCampana as AnioCampana,
 		ISNULL(I.U2C_MAX_RealUUDevueltas,0)			AS U2C_MAX_RealUUDevueltas,
 		ISNULL(I.U2C_MAX_RealUUAnuladas,0)		AS U2C_MAX_RealUUAnuladas,
 		ISNULL(I.U2C_MAX_RealVtaMNNeto,0)		AS U2C_MAX_RealVtaMNNeto,
+		ISNULL(I.U2C_MAX_OportunidadAhorroMN,0) AS U2C_MAX_OportunidadAhorroMN,
+		ISNULL(H.U3C_MAX_OportunidadAhorroMN,0) AS U3C_MAX_OportunidadAhorroMN,
+		ISNULL(H.U3C_PRO_RealVtaMNNeto,0) AS U3C_PRO_RealVtaMNNeto,
 		ISNULL(H.U3C_PRO_OportunidadAhorroMN,0)		AS U3C_PRO_OportunidadAhorroMN,
 		ISNULL(H.U3C_DESV_RealUUVendidas,0)		AS U3C_DESV_RealUUVendidas,
 		ISNULL(H.U3C_DESV_RealUUDevueltas,0)		AS U3C_DESV_RealUUDevueltas,
@@ -617,6 +475,8 @@ SELECT  @AnioCampana as AnioCampana,
 		ISNULL(H.U3C_MAX_RealUUDevueltas,0)			AS U3C_MAX_RealUUDevueltas,
 		ISNULL(H.U3C_MAX_RealUUAnuladas,0)		AS U3C_MAX_RealUUAnuladas,
 		ISNULL(H.U3C_MAX_RealVtaMNNeto,	0)		AS U3C_MAX_RealVtaMNNeto,
+		ISNULL(G.U4C_MAX_OportunidadAhorroMN,0) AS U4C_MAX_OportunidadAhorroMN,
+		ISNULL(G.U4C_PRO_RealVtaMNNeto,0) AS U4C_PRO_RealVtaMNNeto,
 		ISNULL(G.U4C_PRO_OportunidadAhorroMN,0)		AS U4C_PRO_OportunidadAhorroMN,
 		ISNULL(G.U4C_DESV_RealUUVendidas,0)	AS U4C_DESV_RealUUVendidas,
 		ISNULL(G.U4C_DESV_RealUUDevueltas,0)		AS U4C_DESV_RealUUDevueltas,
@@ -632,6 +492,8 @@ SELECT  @AnioCampana as AnioCampana,
 		ISNULL(G.U4C_MAX_RealUUDevueltas,0)			AS U4C_MAX_RealUUDevueltas,
 		ISNULL(G.U4C_MAX_RealUUAnuladas,0)		AS U4C_MAX_RealUUAnuladas,
 		ISNULL(G.U4C_MAX_RealVtaMNNeto,0)		AS U4C_MAX_RealVtaMNNeto,
+		ISNULL(F.U5C_MAX_OportunidadAhorroMN,0) AS U5C_MAX_OportunidadAhorroMN,
+		ISNULL(F.U5C_PRO_RealVtaMNNeto,0) AS U5C_PRO_RealVtaMNNeto,
 		ISNULL(F.U5C_PRO_OportunidadAhorroMN,0)		AS U5C_PRO_OportunidadAhorroMN,
 		ISNULL(F.U5C_DESV_RealUUVendidas,0)	AS U5C_DESV_RealUUVendidas,
 		ISNULL(F.U5C_DESV_RealUUDevueltas,0)			AS U5C_DESV_RealUUDevueltas,
@@ -647,6 +509,8 @@ SELECT  @AnioCampana as AnioCampana,
 		ISNULL(F.U5C_MAX_RealUUDevueltas,0)		AS U5C_MAX_RealUUDevueltas,
 		ISNULL(F.U5C_MAX_RealUUAnuladas,0)		AS U5C_MAX_RealUUAnuladas,
 		ISNULL(F.U5C_MAX_RealVtaMNNeto,0)		AS U5C_MAX_RealVtaMNNeto,
+		ISNULL(E.U6C_MAX_OportunidadAhorroMN,0) AS U6C_MAX_OportunidadAhorroMN,
+		ISNULL(E.U6C_PRO_RealVtaMNNeto,0) AS U6C_PRO_RealVtaMNNeto,
 		ISNULL(E.U6C_PRO_OportunidadAhorroMN,0)		AS U6C_PRO_OportunidadAhorroMN,
 		ISNULL(E.U6C_DESV_RealUUVendidas,0)	AS U6C_DESV_RealUUVendidas,
 		ISNULL(E.U6C_DESV_RealUUDevueltas,0)		AS U6C_DESV_RealUUDevueltas,
@@ -662,6 +526,8 @@ SELECT  @AnioCampana as AnioCampana,
 		ISNULL(E.U6C_MAX_RealUUDevueltas,0)			AS U6C_MAX_RealUUDevueltas,
 		ISNULL(E.U6C_MAX_RealUUAnuladas,0)		AS U6C_MAX_RealUUAnuladas,
 		ISNULL(E.U6C_MAX_RealVtaMNNeto,0)		AS U6C_MAX_RealVtaMNNeto,
+		ISNULL(D.U9C_MAX_OportunidadAhorroMN,0) AS U9C_MAX_OportunidadAhorroMN,
+		ISNULL(D.U9C_PRO_RealVtaMNNeto,0) AS U9C_PRO_RealVtaMNNeto,
 		ISNULL(D.U9C_PRO_OportunidadAhorroMN,0)		AS U9C_PRO_OportunidadAhorroMN,
 		ISNULL(D.U9C_DESV_RealUUVendidas,0)	AS U9C_DESV_RealUUVendidas,
 		ISNULL(D.U9C_DESV_RealUUDevueltas,0)		AS U9C_DESV_RealUUDevueltas,
@@ -677,6 +543,8 @@ SELECT  @AnioCampana as AnioCampana,
 		ISNULL(D.U9C_MAX_RealUUDevueltas,0)			AS U9C_MAX_RealUUDevueltas,
 		ISNULL(D.U9C_MAX_RealUUAnuladas,0)		AS U9C_MAX_RealUUAnuladas,
 		ISNULL(D.U9C_MAX_RealVtaMNNeto,0)		AS U9C_MAX_RealVtaMNNeto,
+		ISNULL(C.U12C_MAX_OportunidadAhorroMN,0) AS U12C_MAX_OportunidadAhorroMN,
+		ISNULL(C.U12C_PRO_RealVtaMNNeto,0) AS U12C_PRO_RealVtaMNNeto,
 		ISNULL(C.U12C_PRO_OportunidadAhorroMN,0)		AS U12C_PRO_OportunidadAhorroMN,
 		ISNULL(C.U12C_DESV_RealUUVendidas,0)	AS U12C_DESV_RealUUVendidas,
 		ISNULL(C.U12C_DESV_RealUUDevueltas,0)		AS U12C_DESV_RealUUDevueltas,
@@ -692,6 +560,8 @@ SELECT  @AnioCampana as AnioCampana,
 		ISNULL(C.U12C_MAX_RealUUDevueltas,0)		AS U12C_MAX_RealUUDevueltas,
 		ISNULL(C.U12C_MAX_RealUUAnuladas,0)		AS U12C_MAX_RealUUAnuladas,
 		ISNULL(C.U12C_MAX_RealVtaMNNeto,0)		AS U12C_MAX_RealVtaMNNeto,
+		ISNULL(B.U15C_MAX_OportunidadAhorroMN,0) AS U15C_MAX_OportunidadAhorroMN,
+		ISNULL(B.U15C_PRO_RealVtaMNNeto,0) AS U15C_PRO_RealVtaMNNeto,
 		ISNULL(B.U15C_PRO_OportunidadAhorroMN,0)		AS U15C_PRO_OportunidadAhorroMN,
 		ISNULL(B.U15C_DESV_RealUUVendidas,0)	AS U15C_DESV_RealUUVendidas,
 		ISNULL(B.U15C_DESV_RealUUDevueltas,0)		AS U15C_DESV_RealUUDevueltas,
@@ -707,6 +577,8 @@ SELECT  @AnioCampana as AnioCampana,
 		ISNULL(B.U15C_MAX_RealUUDevueltas,0)		AS U15C_MAX_RealUUDevueltas,
 		ISNULL(B.U15C_MAX_RealUUAnuladas,0)		AS U15C_MAX_RealUUAnuladas,
 		ISNULL(B.U15C_MAX_RealVtaMNNeto,0)		AS U15C_MAX_RealVtaMNNeto,
+		ISNULL(A.U18C_MAX_OportunidadAhorroMN,0) AS U18C_MAX_OportunidadAhorroMN,
+		ISNULL(A.U18C_PRO_RealVtaMNNeto,0) AS U18C_PRO_RealVtaMNNeto,
 		ISNULL(A.U18C_PRO_OportunidadAhorroMN,0)		AS U18C_PRO_OportunidadAhorroMN,
 		ISNULL(A.U18C_DESV_RealUUVendidas,0)	AS U18C_DESV_RealUUVendidas,
 		ISNULL(A.U18C_DESV_RealUUDevueltas,0)		AS U18C_DESV_RealUUDevueltas,
@@ -784,33 +656,35 @@ LEFT JOIN EbelistaUC J ON A.Pkebelista = J.Pkebelista AND A.CodPais = J.CodPais
 --select * from #TMP_EbeHistoria
 --WHERE PkEbelista = 1228448
 
-IF OBJECT_ID ('tempdb..#KR_TARGET_FUGA') IS NOT NULL DROP TABLE #KR_TARGET_FUGA
+IF OBJECT_ID ('tempdb..#KR_TARGET_FUGA1') IS NOT NULL DROP TABLE #KR_TARGET_FUGA1
 
-CREATE TABLE #KR_TARGET_FUGA
+CREATE TABLE #KR_TARGET_FUGA1
 (
 	AnioCampanaT CHAR(6),
 	AnioCampanaUC CHAR(6),
 	CodPais CHAR(2),
 	[Target] INT,
 	PKEbelista INT,
-	Tipo VARCHAR(20),
-	Cx2_Activa INT,
-	Cx1_Activa INT,
-	Cx_Activa INT,
-	Cx2_PasoPedido INT,
-	Cx1_PasoPedido INT,
-	Cx_PasoPedido INT,
-	Cx2_Comp_Rolling VARCHAR(20),
-	Cx1_Comp_Rolling VARCHAR(20),
-	Cx_Comp_Rolling VARCHAR(20),
-	Cx2_Status VARCHAR(15),
-	Cx1_Status VARCHAR(15),
+	Tipo VARCHAR(12),
 	Cx_Status VARCHAR(15),
+	Cx1_Status VARCHAR(15),
+	Cx2_Status VARCHAR(15),
+	Cx_Activa tinyint,
+	Cx1_Activa tinyint,
+	Cx2_Activa tinyint,
+	Cx_Comp_Rolling VARCHAR(20),
+	Cx1_Comp_Rolling VARCHAR(20),
+	Cx2_Comp_Rolling VARCHAR(20),
+	Cx_PasoPedido tinyint,
+	Cx1_PasoPedido tinyint,
+	Cx2_PasoPedido tinyint,
 )
 
-INSERT INTO #KR_TARGET_FUGA
-EXEC KR_MATRIZ_TARG_V1 'PE', '201716'
+INSERT INTO #KR_TARGET_FUGA1
+EXEC KR_MATRIZ_TARG_V1 @CodPais,@AnioCampana
 
+
+IF OBJECT_ID('tempdb..#KR_VEN_CAMP_TF') IS NOT NULL DROP TABLE #KR_VEN_CAMP_TF
 
 SELECT 
 B.[TARGET],
@@ -1215,5 +1089,6 @@ CASE WHEN ISNULL(A.U9C_RealUUVendidas,0)=0 THEN 0 ELSE (1.0)* ISNULL(A.U9C_Oport
 CASE WHEN ISNULL(A.U12C_RealUUVendidas,0)=0 THEN 0 ELSE (1.0)* ISNULL(A.U12C_OportunidadAhorroMN,0)/ ISNULL(A.U12C_RealUUVendidas,0) END  AS U12C_RAT_AHOR_UNI_CV,
 CASE WHEN ISNULL(A.U15C_RealUUVendidas,0)=0 THEN 0 ELSE (1.0)* ISNULL(A.U15C_OportunidadAhorroMN,0)/ ISNULL(A.U15C_RealUUVendidas,0) END  AS U15C_RAT_AHOR_UNI_CV,
 CASE WHEN ISNULL(A.U18C_RealUUVendidas,0)=0 THEN 0 ELSE (1.0)* ISNULL(A.U18C_OportunidadAhorroMN,0)/ ISNULL(A.U18C_RealUUVendidas,0) END  AS U18C_RAT_AHOR_UNI_CV
+INTO #KR_VEN_CAMP_TF
 FROM #KR_VEN_CAMP_TOT A 
-INNER JOIN #KR_TARGET_FUGA B ON A.AnioCampana = B.AnioCampanaT AND A.PKEbelista = B.PKEbelista AND A.CodPais = B.CodPais
+INNER JOIN #KR_TARGET_FUGA1 B ON A.AnioCampana = B.AnioCampanaT AND A.PKEbelista = B.PKEbelista AND A.CodPais = B.CodPais
