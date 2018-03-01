@@ -1,10 +1,10 @@
-CREATE PROCEDURE KR_MATRIZ_VEN_MCT
-@CodPais CHAR(2),
-@AnioCampana CHAR(6)
+--CREATE PROCEDURE KR_MATRIZ_VEN_MCT
+--@CodPais CHAR(2),
+--@AnioCampana CHAR(6)
 
-AS
+--AS
 
-BEGIN
+--BEGIN
 
 declare @AnioCampana CHAR(6)
 declare @CodPais CHAR(2)
@@ -42,14 +42,15 @@ select A.CodPais,A.aniocampana,A.pkebelista,
 INTO #TMP_FVTAPROEBECAM
 FROM [DWH_ANALITICO].[dbo].[DWH_FVTAPROEBECAM]  A
 inner JOIN  [DWH_ANALITICO].[dbo].[DWH_DTIPOOFERTA] B  ON A.PKTipoOferta = B.PKTipoOferta AND B.CodPais = A.CodPais 
-inner JOIN  [DWH_ANALITICO].[dbo].[DWH_dmatrizcampana] C  
-		ON A.Codventa = C.Codventa and A.Aniocampana = C.Aniocampana and A.PkProducto = C.PkProducto AND C.CodPais = A.CodPais AND A.CodCanalVenta = C.CodCanalVenta AND A.PkTipoOferta = C.PkTipoOferta
+--inner JOIN  [DWH_ANALITICO].[dbo].[DWH_dmatrizcampana] C  
+--		ON A.Codventa = C.Codventa and A.Aniocampana = C.Aniocampana and A.PkProducto = C.PkProducto 
+--		AND C.CodPais = A.CodPais AND A.CodCanalVenta = C.CodCanalVenta AND A.PkTipoOferta = C.PkTipoOferta
 inner JOIN  [DWH_ANALITICO].[dbo].[DWH_dproducto] D  ON A.Pkproducto = D.Pkproducto AND D.CodPais= A.CodPais 
 where D.CodMarca in ('A','B','C')
 and D.descategoria in ('CUIDADO PERSONAL','FRAGANCIAS','MAQUILLAJE','TRATAMIENTO CORPORAL','TRATAMIENTO FACIAL')
 and B.CodTipoOferta not in ('030','031','040','051','061','062','065','066','068','071','072','077','078','079','082','083','085','090','093','109','050','082','091','098')
 and B.CodTipoProfit ='01'
-and C.CodVenta<> '00000'
+and A.CodVenta<> '00000'
 and RealUUVendidas>0 and RealVtaMNNeto>0
 AND A.ANIOCAMPANA BETWEEN @AnioCampanamenos17 AND @AnioCampana AND A.CodPais = @CodPais 
 AND a.aniocampana=a.aniocampanaref

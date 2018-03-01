@@ -22,8 +22,8 @@ declare
 	 @CodPais CHAR(2),
 	 @AnioCampana CHAR(6)
 
-set @CodPais = 'PE'
-set @AnioCampana = '201716'
+set @CodPais = 'CO'
+set @AnioCampana = '201712'
 set @AnioCampanamenos1 = dbo.CalculaAnioCampana(@AnioCampana, -1)
 set @AnioCampanamenos2 = dbo.CalculaAnioCampana(@AnioCampana, -2)
 set @AnioCampanamenos3 = dbo.CalculaAnioCampana(@AnioCampana, -3)
@@ -345,12 +345,12 @@ SELECT A.CodPais, A.PkEbelista,
 ),EbelistaCampanaMenos17 AS
 (
 	SELECT A.CodPais, A.PkEbelista, 
-			1.0*SUM(RealUUVendidas)/17 as U18C_RealUUVendidas,
-			1.0*SUM(RealUUFaltantes)/17 as U18C_RealUUFaltantes,
-			1.0*SUM(RealUUDevueltas)/17 as U18C_RealUUDevueltas, 
-			1.0*SUM(RealUUAnuladas)/17 as U18C_RealUUAnuladas,
-			1.0*SUM(RealVtaMNNeto)/17 as U18C_RealVtaMNNeto,
-			1.0*SUM(OportunidadAhorroMN)/17 as U18C_OportunidadAhorroMN,
+			1.0*SUM(RealUUVendidas)/18 as U18C_RealUUVendidas,
+			1.0*SUM(RealUUFaltantes)/18 as U18C_RealUUFaltantes,
+			1.0*SUM(RealUUDevueltas)/18 as U18C_RealUUDevueltas, 
+			1.0*SUM(RealUUAnuladas)/18 as U18C_RealUUAnuladas,
+			1.0*SUM(RealVtaMNNeto)/18 as U18C_RealVtaMNNeto,
+			1.0*SUM(OportunidadAhorroMN)/18 as U18C_OportunidadAhorroMN,
 			1.0*SUM(CASE WHEN AnioCampana < @AnioCampana THEN RealUUVendidas ELSE 0 END)/17 AS U18C_RealUUVendidas_SUC,
 			1.0*SUM(CASE WHEN AnioCampana < @AnioCampana THEN OportunidadAhorroMN ELSE 0 END)/17 AS U18C_OportunidadAhorroMN_SUC,
 			1.0*SUM(CASE WHEN AnioCampana < @AnioCampana THEN RealVtaMNNeto ELSE 0 END)/17 AS U18C_RealVtaMNNeto_SUC,
@@ -1092,3 +1092,4 @@ CASE WHEN ISNULL(A.U18C_RealUUVendidas,0)=0 THEN 0 ELSE (1.0)* ISNULL(A.U18C_Opo
 INTO #KR_VEN_CAMP_TF
 FROM #KR_VEN_CAMP_TOT A 
 INNER JOIN #KR_TARGET_FUGA1 B ON A.AnioCampana = B.AnioCampanaT AND A.PKEbelista = B.PKEbelista AND A.CodPais = B.CodPais
+

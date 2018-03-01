@@ -27,11 +27,11 @@ SET ANSI_WARNINGS OFF;
 
 BEGIN
 
---declare @CodPais CHAR(2),
---		@AnioCampana VARCHAR(6)
+declare @CodPais CHAR(2),
+		@AnioCampana VARCHAR(6)
 
---set @CodPais = 'CO'
---set	@AnioCampana = '201709'
+set @CodPais = 'CO'
+set	@AnioCampana = '201712'
 
 
 declare @AnioCampanamenos1 CHAR(6),
@@ -810,8 +810,7 @@ SELECT
 	G.C15_Flagactiva,
 	G.C16_Flagactiva,
 	G.C17_Flagactiva,
-	G.C18_Flagactiva,
-	CAST(NULL AS INT) as Antig_act
+	G.C18_Flagactiva
 INTO #KR_MCC_Final
 FROM #KR_MCC_DATOS A
 LEFT JOIN #KR_CONSTANCIA B   ON A.PKEbelista=B.PKEbelista
@@ -826,6 +825,9 @@ LEFT JOIN #KR_NCAMP  J        ON A.PKEbelista=J.PKEbelista;
 
 SELECT * FROM #KR_MCC_Final
 ORDER BY PkEbelista
+
+
+
 
 END
 
