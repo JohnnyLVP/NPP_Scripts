@@ -1,13 +1,28 @@
---use BD_ANALITICO
---GO
+ALTER  PROCEDURE KR_MATRIZ_VEN_V1
+	@CodPais CHAR(2),
+	@AnioCampana CHAR(6)
 
---CREATE PROCEDURE KR_MATRIZ_VEN
---	@CodPais CHAR(2),
---	@AnioCampana CHAR(6)
+AS
 
---AS
+BEGIN
 
---BEGIN
+/*
+	SP: Venta
+	Creado por: Karin Rodriguez 
+	Fecha Creacion: 31/07/2017
+
+	Modificacion por: Johnny Valenzuela 
+	Fecha Modificacion: 02/03/2018
+
+	/*
+		Tiempo Inicial : 40 - 60 min Aprox
+		Tiempo Final: 2 - 10 min Aprox
+	*/
+
+	EXEC KR_MATRIZ_VEN 'CO','201716'
+
+*/
+
 
 declare 
      @AnioCampanamenos1 CHAR(6),
@@ -18,12 +33,14 @@ declare
 	 @AnioCampanamenos8 CHAR(6),
 	 @AnioCampanamenos11 CHAR(6),
 	 @AnioCampanamenos14 CHAR(6),
-	 @AnioCampanamenos17 CHAR(6),
-	 @CodPais CHAR(2),
-	 @AnioCampana CHAR(6)
+	 @AnioCampanamenos17 CHAR(6)
 
-set @CodPais = 'CO'
-set @AnioCampana = '201712'
+--declare	 @CodPais CHAR(2),
+--		@AnioCampana CHAR(6)
+
+--set @CodPais = 'CO'
+--set @AnioCampana = '201710'
+
 set @AnioCampanamenos1 = dbo.CalculaAnioCampana(@AnioCampana, -1)
 set @AnioCampanamenos2 = dbo.CalculaAnioCampana(@AnioCampana, -2)
 set @AnioCampanamenos3 = dbo.CalculaAnioCampana(@AnioCampana, -3)
@@ -650,46 +667,43 @@ LEFT JOIN EbelistaUC J ON A.Pkebelista = J.Pkebelista AND A.CodPais = J.CodPais
 
 /*PE: 9min aprox a las 2pm Cantidad: 272854 Consultoras al dia siguiente 2 min a las 9:19*/
 
---select * from BD_ANALITICO.dbo.KR_MAT_FUGA_201716
---WHERE PkEbelista = 1228448
+--IF OBJECT_ID ('tempdb..#KR_TARGET_FUGA1') IS NOT NULL DROP TABLE #KR_TARGET_FUGA1
 
---select * from #TMP_EbeHistoria
---WHERE PkEbelista = 1228448
+--DECLARE @AnioCampanaCx2 CHAR(6)
+--SET @AnioCampanaCx2 = dbo.CalculaAnioCampana(@AnioCampana,2)
 
-IF OBJECT_ID ('tempdb..#KR_TARGET_FUGA1') IS NOT NULL DROP TABLE #KR_TARGET_FUGA1
+--CREATE TABLE #KR_TARGET_FUGA1
+--(
+--	AnioCampanaT CHAR(6),
+--	AnioCampanaUC CHAR(6),
+--	CodPais CHAR(2),
+--	[Target] INT,
+--	PKEbelista INT,
+--	Tipo VARCHAR(12),
+--	Cx_Status VARCHAR(15),
+--	Cx1_Status VARCHAR(15),
+--	Cx2_Status VARCHAR(15),
+--	Cx_Activa tinyint,
+--	Cx1_Activa tinyint,
+--	Cx2_Activa tinyint,
+--	Cx_Comp_Rolling VARCHAR(20),
+--	Cx1_Comp_Rolling VARCHAR(20),
+--	Cx2_Comp_Rolling VARCHAR(20),
+--	Cx_PasoPedido tinyint,
+--	Cx1_PasoPedido tinyint,
+--	Cx2_PasoPedido tinyint,
+--)
 
-CREATE TABLE #KR_TARGET_FUGA1
-(
-	AnioCampanaT CHAR(6),
-	AnioCampanaUC CHAR(6),
-	CodPais CHAR(2),
-	[Target] INT,
-	PKEbelista INT,
-	Tipo VARCHAR(12),
-	Cx_Status VARCHAR(15),
-	Cx1_Status VARCHAR(15),
-	Cx2_Status VARCHAR(15),
-	Cx_Activa tinyint,
-	Cx1_Activa tinyint,
-	Cx2_Activa tinyint,
-	Cx_Comp_Rolling VARCHAR(20),
-	Cx1_Comp_Rolling VARCHAR(20),
-	Cx2_Comp_Rolling VARCHAR(20),
-	Cx_PasoPedido tinyint,
-	Cx1_PasoPedido tinyint,
-	Cx2_PasoPedido tinyint,
-)
-
-INSERT INTO #KR_TARGET_FUGA1
-EXEC KR_MATRIZ_TARG_V1 @CodPais,@AnioCampana
+--INSERT INTO #KR_TARGET_FUGA1
+--EXEC BD_ANALITICO.dbo.KR_MATRIZ_TARG_V1 @CodPais,@AnioCampanaCx2
 
 
 IF OBJECT_ID('tempdb..#KR_VEN_CAMP_TF') IS NOT NULL DROP TABLE #KR_VEN_CAMP_TF
 
 SELECT 
-B.[TARGET],
-B.PKEBELISTA,
-B.ANIOCAMPANAUC AS ANIOCAMPANA,
+--B.[TARGET],
+A.PKEBELISTA,
+A.AnioCampana,--B.ANIOCAMPANAUC AS ANIOCAMPANA,
 CASE WHEN B.TIPO='nuevas' THEN 1  WHEN B.TIPO='Establecidas' THEN 0 END AS T_NUEVA,
 ISNULL(A.UC_RealUUVendidas,0) AS UC_RealUUVendidas,
 ISNULL(A.U2C_RealUUVendidas,0) AS U2C_RealUUVendidas,
@@ -1089,7 +1103,13 @@ CASE WHEN ISNULL(A.U9C_RealUUVendidas,0)=0 THEN 0 ELSE (1.0)* ISNULL(A.U9C_Oport
 CASE WHEN ISNULL(A.U12C_RealUUVendidas,0)=0 THEN 0 ELSE (1.0)* ISNULL(A.U12C_OportunidadAhorroMN,0)/ ISNULL(A.U12C_RealUUVendidas,0) END  AS U12C_RAT_AHOR_UNI_CV,
 CASE WHEN ISNULL(A.U15C_RealUUVendidas,0)=0 THEN 0 ELSE (1.0)* ISNULL(A.U15C_OportunidadAhorroMN,0)/ ISNULL(A.U15C_RealUUVendidas,0) END  AS U15C_RAT_AHOR_UNI_CV,
 CASE WHEN ISNULL(A.U18C_RealUUVendidas,0)=0 THEN 0 ELSE (1.0)* ISNULL(A.U18C_OportunidadAhorroMN,0)/ ISNULL(A.U18C_RealUUVendidas,0) END  AS U18C_RAT_AHOR_UNI_CV
-INTO #KR_VEN_CAMP_TF
+INTO MDL_NPP_Venta--#KR_VEN_CAMP_TF
 FROM #KR_VEN_CAMP_TOT A 
-INNER JOIN #KR_TARGET_FUGA1 B ON A.AnioCampana = B.AnioCampanaT AND A.PKEbelista = B.PKEbelista AND A.CodPais = B.CodPais
+--INNER JOIN BD_ANALITICO.dbo.MDL_NPP_Target B ON A.AnioCampana = B.AnioCampanaUC AND A.PKEbelista = B.PKEbelista AND A.CodPais = B.CodPais
 
+--SELECT * 
+--INTO MDL_NPP_Venta
+--FROM #KR_VEN_CAMP_TF
+--ORDER BY PkEbelista
+
+END

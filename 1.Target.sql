@@ -136,7 +136,9 @@ FROM #KR_MCC_TARGET_T1
 DELETE FROM #KR_TARGET_FUGA WHERE Tipo IS NULL /*SON LAS QUE NO TIENEN SEGMENTO*/
 
 /*En un inicio estaba el pkterritorio en el #KR_TARGET_FUGA, se quioto ya que solo se usa para cruzar*/
-SELECT * FROM #KR_TARGET_FUGA
+SELECT * 
+INTO MDL_NPP_Target
+FROM #KR_TARGET_FUGA
 ORDER BY Pkebelista
 
 END
